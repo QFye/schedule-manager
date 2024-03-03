@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <el-input placeholder="请输入分类名称查询" style="width: 200px" v-model="name"></el-input>
+      <el-input placeholder="请输入评论内容查询" style="width: 200px" v-model="commentContent"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -15,16 +15,9 @@
       <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
-        <el-table-column prop="name" label="分类名称" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="description" label="分类描述" show-overflow-tooltip></el-table-column>
-        <el-table-column label="分类图标">
-          <template v-slot="scope">
-            <div style="display: flex; align-items: center">
-              <el-image style="width: 40px; height: 40px;" v-if="scope.row.img"
-                        :src="scope.row.img" :preview-src-list="[scope.row.img]"></el-image>
-            </div>
-          </template>
-        </el-table-column>
+        <el-table-column prop="user" label="用户" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="scheduleId" label="计划表编号" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="commentContent" label="评论内容" show-overflow-tooltip></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
@@ -48,24 +41,20 @@
     </div>
 
 
-    <el-dialog title="信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+    <el-dialog title="评论" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
       <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
-        <el-form-item prop="name" label="分类名称">
-          <el-input v-model="form.name" autocomplete="off"></el-input>
+        <el-form-item prop="userId" label="用户">
+          <el-select v-model="form.userId" placeholder="请选择用户">
+            <el-option v-for="item in userData" :label="item.name" :value="item.id" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item prop="description" label="分类描述">
-          <el-input v-model="form.description" autocomplete="off"></el-input>
+        <el-form-item prop="scheduleId" label="计划表编号">
+          <el-select v-model="form.scheduleId" placeholder="请选择用户">
+            <el-option v-for="item in scheduleData" :label="item.id" :value="item.id" :key="item.id"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="分类图标">
-          <el-upload
-              class="avatar-uploader"
-              :action="$baseUrl + '/files/upload'"
-              :headers="{ token: user.token }"
-              list-type="picture"
-              :on-success="handleImageSuccess"
-          >
-            <el-button type="primary">上传图标</el-button>
-          </el-upload>
+        <el-form-item prop="commentContent" label="内容">
+          <el-input type="textarea" :rows="5" v-model="form.commentContent" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -80,32 +69,54 @@
 
 <script>
 export default {
-  name: "EventCategory",
+  name: "Comment",
   data() {
     return {
       tableData: [],  // 所有的数据
       pageNum: 1,   // 当前的页码
       pageSize: 10,  // 每页显示的个数
       total: 0,
-      name: null,
+      title: null,
       fromVisible: false,
       form: {},
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         title: [
-          {required: true, name: '请输入分类名称', trigger: 'blur'},
+          {required: true, message: '请输入标题', trigger: 'blur'},
         ],
         content: [
-          {required: true, img: '请上传分类图标', trigger: 'blur'},
+          {required: true, message: '请输入内容', trigger: 'blur'},
         ]
       },
-      ids: []
+      ids: [],
+      userData: [],
+      scheduleData: [],
     }
   },
   created() {
     this.load(1)
+    this.loadUserName()
+    this.loadSchedule()
   },
   methods: {
+    loadUserName(){
+      this.$request.get('user/selectAll').then(res=>{
+        if(res.code == '200'){
+          this.userData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadSchedule(){
+      this.$request.get('schedule/selectAll').then(res=>{
+        if(res.code == '200'){
+          this.scheduleData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
       this.fromVisible = true   // 打开弹窗
@@ -118,7 +129,7 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           this.$request({
-            url: this.form.id ? '/eventCategory/update' : '/eventCategory/add',
+            url: this.form.id ? '/comment/update' : '/comment/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {
@@ -135,7 +146,7 @@ export default {
     },
     del(id) {   // 单个删除
       this.$confirm('您确定删除吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/eventCategory/delete/' + id).then(res => {
+        this.$request.delete('/comment/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -155,7 +166,7 @@ export default {
         return
       }
       this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/eventCategory/delete/batch', {data: this.ids}).then(res => {
+        this.$request.delete('/comment/delete/batch', {data: this.ids}).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -168,11 +179,11 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/eventCategory/selectPage', {
+      this.$request.get('/comment/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          name: this.name,
+          title: this.title,
         }
       }).then(res => {
         this.tableData = res.data?.list
@@ -180,14 +191,11 @@ export default {
       })
     },
     reset() {
-      this.name = null
+      this.title = null
       this.load(1)
     },
     handleCurrentChange(pageNum) {
       this.load(pageNum)
-    },
-    handleImageSuccess(response, file, fileList) {
-      this.form.img = response.data
     },
   }
 }

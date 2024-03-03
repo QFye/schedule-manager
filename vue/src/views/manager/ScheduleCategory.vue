@@ -80,7 +80,7 @@
 
 <script>
 export default {
-  name: "EventCategory",
+  name: "ScheduleCategory",
   data() {
     return {
       tableData: [],  // 所有的数据
@@ -118,7 +118,7 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           this.$request({
-            url: this.form.id ? '/eventCategory/update' : '/eventCategory/add',
+            url: this.form.id ? '/scheduleCategory/update' : '/scheduleCategory/add',
             method: this.form.id ? 'PUT' : 'POST',
             data: this.form
           }).then(res => {
@@ -135,7 +135,7 @@ export default {
     },
     del(id) {   // 单个删除
       this.$confirm('您确定删除吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/eventCategory/delete/' + id).then(res => {
+        this.$request.delete('/scheduleCategory/delete/' + id).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -155,7 +155,7 @@ export default {
         return
       }
       this.$confirm('您确定批量删除这些数据吗？', '确认删除', {type: "warning"}).then(response => {
-        this.$request.delete('/eventCategory/delete/batch', {data: this.ids}).then(res => {
+        this.$request.delete('/scheduleCategory/delete/batch', {data: this.ids}).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
             this.load(1)
@@ -168,7 +168,7 @@ export default {
     },
     load(pageNum) {  // 分页查询
       if (pageNum) this.pageNum = pageNum
-      this.$request.get('/eventCategory/selectPage', {
+      this.$request.get('/scheduleCategory/selectPage', {
         params: {
           pageNum: this.pageNum,
           pageSize: this.pageSize,

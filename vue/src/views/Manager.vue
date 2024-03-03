@@ -44,6 +44,10 @@
             </template>
             <el-menu-item index="/notice">公告信息</el-menu-item>
             <el-menu-item index="/eventCategory">日程事件分类信息</el-menu-item>
+            <el-menu-item index="/event">日程事件信息</el-menu-item>
+            <el-menu-item index="/scheduleCategory">计划表分类信息</el-menu-item>
+            <el-menu-item index="/schedule">计划表信息</el-menu-item>
+            <el-menu-item index="/comment">评论信息</el-menu-item>
           </el-submenu>
 
           <el-submenu index="user">
@@ -51,6 +55,14 @@
               <i class="el-icon-menu"></i><span>用户管理</span>
             </template>
             <el-menu-item index="/admin">管理员信息</el-menu-item>
+            <el-menu-item index="/user">用户信息</el-menu-item>
+          </el-submenu>
+
+          <el-submenu index="team">
+            <template slot="title">
+              <i class="el-icon-menu"></i><span>团队管理</span>
+            </template>
+            <el-menu-item index="/team">团队信息</el-menu-item>
           </el-submenu>
         </el-menu>
       </div>

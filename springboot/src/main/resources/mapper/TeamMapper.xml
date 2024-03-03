@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TeamMapper">
+
+    <sql id="Base_Column_List">
+        id,name,creationTime,userId
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Team">
+        select team.id, team.name, team.creationTime, team.userId, user.name as user, M.memberCount
+        from team
+        left join user on team.userId = user.id
+        left join (
+            select team.id as tid, COUNT(user.id) as memberCount
+            from team
+            left join TeamMemberRelationship on TeamMemberRelationship.teamId = team.id
+            left join user on TeamMemberRelationship.userId = user.id
+            group by team.id
+        ) as M on M.tid = team.id
+        <where>
+            <if test="id != null"> and team.id= #{team.id}</if>
+            <if test="name != null"> and team.name like concat('%', #{team.name}, '%')</if>
+            <if test="creationTime != null"> and creationTime= #{creationTime}</if>
+            <if test="userId != null"> and userId= #{userId}</if>
+        </where>
+        group by team.id order by team.id
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Team">
+        select
+        <include refid="Base_Column_List" />
+        from team
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from team
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Team" useGeneratedKeys="true">
+        insert into team
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="creationTime != null">creationTime,</if>
+            <if test="userId != null">userId,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="creationTime != null">#{creationTime},</if>
+            <if test="userId != null">#{userId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Team">
+        update team
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="creationTime != null">
+                creationTime = #{creationTime},
+            </if>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>
