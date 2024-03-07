@@ -58,8 +58,8 @@ public class EventController {
     /**
      * 根据ID查询
      */
-    @GetMapping("/selectById/{id}")
-    public Result selectById(@PathVariable Integer id) {
+    @GetMapping("/selectById")
+    public Result selectById(@RequestParam Integer id) {
         Event event = eventService.selectById(id);
         return Result.success(event);
     }
@@ -70,6 +70,18 @@ public class EventController {
     @GetMapping("/selectAll")
     public Result selectAll(Event event ) {
         List<Event> list = eventService.selectAll(event);
+        return Result.success(list);
+    }
+
+    @GetMapping("/selectTop10")
+    public Result selectTop10() {
+        List<Event> list = eventService.selectTop10();
+        return Result.success(list);
+    }
+
+    @GetMapping("/selectByCategoryId")
+    public Result selectByCategoryId(@RequestParam Integer id) {
+        List<Event> list = eventService.selectByCategoryId(id);
         return Result.success(list);
     }
 

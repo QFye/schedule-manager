@@ -1,19 +1,14 @@
 <template>
   <div>
-    <div class="front-notice"><i class="el-icon-bell" style="margin-right: 2px"></i>公告：{{ top }}</div>
+    <div class="front-notice" style="background-color: rgba(246,252,255,0.91)"><i class="el-icon-bell" style=";margin-right: 2px"></i>公告：{{ top }}</div>
     <!--头部-->
     <div class="front-header">
       <div class="front-header-left">
         <img src="@/assets/imgs/logo.png" alt="">
-        <div class="title">项目前台</div>
+        <div @click="navTo('/front/home')" class="title">星迹日程管理系统</div>
       </div>
       <div class="front-header-center">
-        <div class="front-header-nav">
-          <el-menu :default-active="$route.path" mode="horizontal" router>
-						<el-menu-item index="/front/home">首页</el-menu-item>
-						<el-menu-item index="/front/person">个人中心</el-menu-item>
-          </el-menu>
-        </div>
+
       </div>
       <div class="front-header-right">
         <div v-if="!user.username">
@@ -80,6 +75,9 @@ export default {
     },
     updateUser() {
       this.user = JSON.parse(localStorage.getItem('xm-user') || '{}')   // 重新获取下用户的最新信息
+    },
+    navTo(url){
+      location.href = url
     },
     // 退出登录
     logout() {

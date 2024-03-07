@@ -5,17 +5,17 @@
 <mapper namespace="com.example.mapper.CommentMapper">
 
     <sql id="Base_Column_List">
-        id,userId,scheduleId,commentContent
+        id,userId,templateId,commentContent
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Comment">
-        select comment.id, comment.userId, comment.scheduleId, comment.commentContent, user.name as user
+        select comment.id, comment.userId, comment.templateId, comment.commentContent, user.name as user
         from comment
         left join user on user.id = comment.userId
         <where>
             <if test="id != null"> and id= #{id}</if>
             <if test="userId != null"> and userId= #{userId}</if>
-            <if test="scheduleId"> and scheduleId= #{scheduleId}</if>
+            <if test="templateId"> and templateId= #{templateId}</if>
             <if test="commentContent != null"> and commentContent= #{commentContent}</if>
         </where>
         order by id
@@ -38,13 +38,13 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
                 <if test="userId != null">userId,</if>
-                <if test="scheduleId != null">scheduleId,</if>
+                <if test="templateId != null">templateId,</if>
                 <if test="commentContent != null">commentContent,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
                 <if test="userId != null">#{userId},</if>
-                <if test="scheduleId != null">#{scheduleId},</if>
+                <if test="templateId != null">#{templateId},</if>
                 <if test="commentContent != null">#{commentContent},</if>
         </trim>
     </insert>
@@ -55,8 +55,8 @@
             <if test="userId != null">
                 userId = #{userId},
             </if>
-            <if test="scheduleId != null">
-                scheduleId = #{scheduleId},
+            <if test="templateId != null">
+                templateId = #{templateId},
             </if>
             <if test="commentContent != null">
                 commentContent = #{commentContent},

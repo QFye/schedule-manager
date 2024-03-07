@@ -1,15 +1,13 @@
 package com.example.service;
 
-import cn.hutool.core.date.DateUtil;
-import com.example.entity.Account;
 import com.example.entity.Event;
 import com.example.mapper.EventMapper;
-import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,6 +56,11 @@ public class EventService {
         return eventMapper.selectById(id);
     }
 
+
+    public List<Event> selectByUserAndDate(Integer id, Date date) {
+        return eventMapper.selectByUserAndDate(id, date);
+    }
+
     /**
      * 查询所有
      */
@@ -74,4 +77,11 @@ public class EventService {
         return PageInfo.of(list);
     }
 
+    public List<Event> selectTop10() {
+        return eventMapper.selectTop10();
+    }
+
+    public List<Event> selectByCategoryId(Integer id) {
+        return eventMapper.selectByCategoryId(id);
+    }
 }

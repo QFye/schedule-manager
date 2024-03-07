@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TemplateMapper">
+
+    <sql id="Base_Column_List">
+        id,name,categoryId,creationTime,userId,price,businessId
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Template">
+        select template.id, template.name, template.categoryId, creationTime, userId, template.price, template.businessId, templateCategory.name as categoryName, user.name as user, COUNT(event.id) as eventCount
+        from template
+        left join templateCategory on template.categoryId = templateCategory.id
+        left join user on template.userId = user.id
+        left join TemplateEventRelation on template.id = TemplateEventRelation.templateId
+        left join event on TemplateEventRelation.eventId = event.id
+        <where>
+            <if test="id != null"> and template.id= #{template.id}</if>
+            <if test="name != null"> and template.name= #{template.name}</if>
+            <if test="categoryId != null"> and categoryId= #{categoryId}</if>
+            <if test="creationTime != null"> and template.creationTime= #{template.creationTime}</if>
+            <if test="userId != null"> and template.userId= #{template.userId}</if>
+            <if test="price != null"> and template.price= #{template.price}</if>
+            <if test="businessId != null"> and template.businessId= #{template.businessId}</if>
+        </where>
+        group by template.id order by template.id
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Template">
+        select
+        <include refid="Base_Column_List" />
+        from template
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from template
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Template" useGeneratedKeys="true">
+        insert into template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="name != null">name,</if>
+                <if test="categoryId != null">categoryId,</if>
+                <if test="creationTime != null">creationTime,</if>
+                <if test="userId != null">userId,</if>
+                <if test="price != null">price,</if>
+                <if test="businessId != null">businessId,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="name != null">#{name},</if>
+                <if test="categoryId != null">#{categoryId},</if>
+                <if test="creationTime != null">#{creationTime},</if>
+                <if test="userId != null">#{userId},</if>
+                <if test="price != null">#{price},</if>
+                <if test="businessId != null">#{businessId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Template">
+        update template
+        <set>
+            <if test="categoryId != null">
+                categoryId = #{categoryId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="creationTime != null">
+                creationTime = #{creationTime},
+            </if>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="businessId != null">
+                businessId = #{businessId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>

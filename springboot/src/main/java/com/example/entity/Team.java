@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * 管理员
 */
-public class Team extends Account implements Serializable {
+public class Team implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /** ID */
@@ -46,22 +46,18 @@ public class Team extends Account implements Serializable {
         this.user = user;
     }
 
-    @Override
     public Integer getId() {
         return id;
     }
 
-    @Override
     public void setId(Integer id) {
         this.id = id;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }

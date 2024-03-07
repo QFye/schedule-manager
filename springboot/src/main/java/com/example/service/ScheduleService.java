@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,6 +54,11 @@ public class ScheduleService {
      */
     public Schedule selectById(Integer id) {
         return scheduleMapper.selectById(id);
+    }
+
+
+    public Schedule selectByIdAndDate(Integer id, Date date) {
+        return scheduleMapper.selectByIdAndDate(id, date);
     }
 
     /**

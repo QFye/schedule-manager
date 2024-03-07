@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.example.entity.Schedule;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -34,4 +35,5 @@ public interface ScheduleMapper {
     */
     List<Schedule> selectAll(Schedule schedule);
 
+    Schedule selectByIdAndDate(Integer id, Date date);
 }

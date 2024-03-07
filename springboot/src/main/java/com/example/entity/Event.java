@@ -1,5 +1,6 @@
 package com.example.entity;
 
+import com.example.common.enums.EventStatusEnum;
 import net.sf.jsqlparser.expression.DateTimeLiteralExpression;
 
 import java.io.Serializable;
@@ -23,11 +24,56 @@ public class Event implements Serializable {
     /** 详细描述 */
     private String description;
 
+    private Float price;
+
     private String img;
+
+    private String status;
+
+    private Integer count;
 
     private Integer categoryId;
 
+    private Integer businessId;
+
+    private String businessName;
+
     private String categoryName;
+
+    private String categoryImg;
+
+    public String getCategoryImg() {
+        return categoryImg;
+    }
+
+    public void setCategoryImg(String categoryImg) {
+        this.categoryImg = categoryImg;
+    }
+
+    public Integer getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Integer businessId) {
+        this.businessId = businessId;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
@@ -43,6 +89,22 @@ public class Event implements Serializable {
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
     public Integer getId() {

@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.EventCategory;
-import com.example.service.EventCategoryService;
+import com.example.entity.Template;
+import com.example.service.TemplateService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,18 +13,18 @@ import java.util.List;
  * 公告信息表前端操作接口
  **/
 @RestController
-@RequestMapping("/eventCategory")
-public class EventCategoryController {
+@RequestMapping("/template")
+public class TemplateController {
 
     @Resource
-    private EventCategoryService eventCategoryService;
+    private TemplateService templateService;
 
     /**
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody EventCategory eventCategory) {
-        eventCategoryService.add(eventCategory);
+    public Result add(@RequestBody Template template) {
+        templateService.add(template);
         return Result.success();
     }
 
@@ -33,7 +33,7 @@ public class EventCategoryController {
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
-        eventCategoryService.deleteById(id);
+        templateService.deleteById(id);
         return Result.success();
     }
 
@@ -42,7 +42,7 @@ public class EventCategoryController {
      */
     @DeleteMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
-        eventCategoryService.deleteBatch(ids);
+        templateService.deleteBatch(ids);
         return Result.success();
     }
 
@@ -50,26 +50,26 @@ public class EventCategoryController {
      * 修改
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody EventCategory eventCategory) {
-        eventCategoryService.updateById(eventCategory);
+    public Result updateById(@RequestBody Template template) {
+        templateService.updateById(template);
         return Result.success();
     }
 
     /**
      * 根据ID查询
      */
-    @GetMapping("/selectById")
-    public Result selectById(@RequestParam Integer id) {
-        EventCategory eventCategory = eventCategoryService.selectById(id);
-        return Result.success(eventCategory);
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id) {
+        Template template = templateService.selectById(id);
+        return Result.success(template);
     }
 
     /**
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll(EventCategory eventCategory ) {
-        List<EventCategory> list = eventCategoryService.selectAll(eventCategory);
+    public Result selectAll(Template template ) {
+        List<Template> list = templateService.selectAll(template);
         return Result.success(list);
     }
 
@@ -77,10 +77,10 @@ public class EventCategoryController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage(EventCategory eventCategory,
+    public Result selectPage(Template template,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<EventCategory> page = eventCategoryService.selectPage(eventCategory, pageNum, pageSize);
+        PageInfo<Template> page = templateService.selectPage(template, pageNum, pageSize);
         return Result.success(page);
     }
 

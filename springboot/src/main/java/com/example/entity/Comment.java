@@ -14,7 +14,7 @@ public class Comment extends Account implements Serializable {
     /** 名称 */
     private Integer userId;
     /** 创建时间 */
-    private Integer scheduleId;
+    private Integer templateId;
 
     private String commentContent;
 
@@ -46,12 +46,12 @@ public class Comment extends Account implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getScheduleId() {
-        return scheduleId;
+    public Integer getTemplateId() {
+        return templateId;
     }
 
-    public void setScheduleId(Integer scheduleId) {
-        this.scheduleId = scheduleId;
+    public void setTemplateId(Integer templateId) {
+        this.templateId = templateId;
     }
 
     public String getCommentContent() {

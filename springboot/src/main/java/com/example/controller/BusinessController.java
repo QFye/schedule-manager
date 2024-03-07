@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.EventCategory;
-import com.example.service.EventCategoryService;
+import com.example.entity.Business;
+import com.example.service.BusinessService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,21 +10,21 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 公告信息表前端操作接口
+ * 用户前端操作接口
  **/
 @RestController
-@RequestMapping("/eventCategory")
-public class EventCategoryController {
+@RequestMapping("/business")
+public class BusinessController {
 
     @Resource
-    private EventCategoryService eventCategoryService;
+    private BusinessService businessService;
 
     /**
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody EventCategory eventCategory) {
-        eventCategoryService.add(eventCategory);
+    public Result add(@RequestBody Business business) {
+        businessService.add(business);
         return Result.success();
     }
 
@@ -33,7 +33,7 @@ public class EventCategoryController {
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
-        eventCategoryService.deleteById(id);
+        businessService.deleteById(id);
         return Result.success();
     }
 
@@ -42,7 +42,7 @@ public class EventCategoryController {
      */
     @DeleteMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
-        eventCategoryService.deleteBatch(ids);
+        businessService.deleteBatch(ids);
         return Result.success();
     }
 
@@ -50,26 +50,26 @@ public class EventCategoryController {
      * 修改
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody EventCategory eventCategory) {
-        eventCategoryService.updateById(eventCategory);
+    public Result updateById(@RequestBody Business business) {
+        businessService.updateById(business);
         return Result.success();
     }
 
     /**
      * 根据ID查询
      */
-    @GetMapping("/selectById")
-    public Result selectById(@RequestParam Integer id) {
-        EventCategory eventCategory = eventCategoryService.selectById(id);
-        return Result.success(eventCategory);
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id) {
+        Business business = businessService.selectById(id);
+        return Result.success(business);
     }
 
     /**
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll(EventCategory eventCategory ) {
-        List<EventCategory> list = eventCategoryService.selectAll(eventCategory);
+    public Result selectAll(Business business ) {
+        List<Business> list = businessService.selectAll(business);
         return Result.success(list);
     }
 
@@ -77,10 +77,10 @@ public class EventCategoryController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage(EventCategory eventCategory,
+    public Result selectPage(Business business,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<EventCategory> page = eventCategoryService.selectPage(eventCategory, pageNum, pageSize);
+        PageInfo<Business> page = businessService.selectPage(business, pageNum, pageSize);
         return Result.success(page);
     }
 

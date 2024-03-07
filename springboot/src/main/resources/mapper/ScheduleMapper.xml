@@ -31,6 +31,13 @@
         where id = #{id}
     </select>
 
+    <select id="selectByIdAndDate" resultType="com.example.entity.Schedule">
+        select
+        <include refid="Base_Column_List" />
+        from schedule
+        where id = #{id} and date = #{date}
+    </select>
+
     <delete id="deleteById">
         delete from schedule
         where  id = #{id}

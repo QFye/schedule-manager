@@ -6,11 +6,20 @@
         <el-form-item prop="username">
           <el-input prefix-icon="el-icon-user" placeholder="请输入账号" v-model="form.username"></el-input>
         </el-form-item>
+        <el-form-item prop="username">
+          <el-input prefix-icon="el-icon-user" placeholder="请输入用户名" v-model="form.name"></el-input>
+        </el-form-item>
         <el-form-item prop="password">
           <el-input prefix-icon="el-icon-lock" placeholder="请输入密码" show-password  v-model="form.password"></el-input>
         </el-form-item>
         <el-form-item prop="confirmPass">
           <el-input prefix-icon="el-icon-lock" placeholder="请确认密码" show-password  v-model="form.confirmPass"></el-input>
+        </el-form-item>
+        <el-form-item style="width: auto">
+          <el-select v-model="form.role" placeholder="请选择角色" style="text-align: center; width: 340px">
+            <el-option label="用户" value="USER"></el-option>
+            <el-option label="商家" value="BUSINESS"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button style="width: 100%; background-color: #333; border-color: #333; color: white" @click="register">注 册</el-button>

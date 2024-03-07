@@ -5,30 +5,49 @@
 <mapper namespace="com.example.mapper.EventMapper">
 
     <sql id="Base_Column_List">
-        id,name,start,last,description,img,categoryId
+        event.id,event.name,event.start,event.last,event.description,event.img,event.categoryId,event.price,event.status,event.count,event.businessId
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Event">
-        select *, eventCategory.name as categoryName
+        select *, eventCategory.name as categoryName, business.name as businessName
         from event
         left join eventCategory on event.categoryId = eventCategory.id
+        left join business on event.businessId = business.id
         <where>
             <if test="id != null"> and event.id= #{event.id}</if>
             <if test="name != null"> and event.name like concat('%', #{event.name}, '%')</if>
             <if test="start != null"> and event.start= #{event.start}</if>
+            <if test="price != null"> and event.price= #{event.price}</if>
             <if test="last != null"> and event.last= #{event.last}</if>
             <if test="description != null"> and event.description= #{event.description}</if>
             <if test="img != null"> and event.img= #{event.img}</if>
             <if test="categoryId != null"> and categoryId= #{categoryId}</if>
+            <if test="status != null"> and status= #{status}</if>
+            <if test="count != null"> and count= #{count}</if>
+            <if test="businessId != null"> and businessId= #{businessId}</if>
         </where>
         order by event.id
     </select>
 
     <select id="selectById" resultType="com.example.entity.Event">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List" />, business.name as businessName, eventCategory.name as categoryName, eventCategory.img as categoryImg
         from event
-        where id = #{id}
+        left join eventCategory on event.categoryId = eventCategory.id
+        left join business on event.businessId = business.id
+        where event.id = #{event.id}
+    </select>
+
+    <select id="selectByUserAndDate" resultType="com.example.entity.Event">
+        select
+        <include refid="Base_Column_List" />, business.name as businessName
+        from event
+        left join scheduleEventRelation on event.id = ScheduleEventRelation.eventId
+        left join schedule on schedule.id = ScheduleEventRelation.scheduleId
+        left join user on user.id = schedule.userId
+        left join business on event.businessId = business.id
+        where user.id = #{id} and schedule.date = #{date}
+        order by schedule.count desc
     </select>
 
     <delete id="deleteById">
@@ -42,19 +61,27 @@
                 <if test="id != null">id,</if>
                 <if test="name != null">name,</if>
                 <if test="start != null">start,</if>
+                <if test="price != null">price,</if>
                 <if test="last != null">last,</if>
                 <if test="description != null">description,</if>
                 <if test="img != null">img,</if>
                 <if test="categoryId != null">categoryId,</if>
+                <if test="status != null">status,</if>
+                <if test="count != null">status,</if>
+                <if test="businessId != null">businessId,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
                 <if test="name != null">#{name},</if>
+                <if test="price != null">#{price},</if>
                 <if test="start != null">#{start},</if>
                 <if test="last != null">#{last},</if>
                 <if test="description != null">#{description},</if>
                 <if test="img != null">#{img},</if>
                 <if test="categoryId != null">#{categoryId},</if>
+                <if test="status != null">#{status},</if>
+                <if test="count != null">#{count},</if>
+                <if test="businessId != null">#{businessId},</if>
         </trim>
     </insert>
 
@@ -67,6 +94,9 @@
             <if test="start != null">
                 start = #{start},
             </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
             <if test="last != null">
                 last = #{last},
             </if>
@@ -78,6 +108,15 @@
             </if>
             <if test="categoryId != null">
                 categoryId = #{categoryId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="count != null">
+                count = #{count},
+            </if>
+            <if test="businessId != null">
+                businessId = #{businessId},
             </if>
         </set>
         where id = #{id} 

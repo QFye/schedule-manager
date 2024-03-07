@@ -14,13 +14,14 @@ const routes = [
     path: '/',
     name: 'Manager',
     component: () => import('../views/Manager.vue'),
-    redirect: '/home',  // 重定向到主页
     children: [
       { path: '403', name: 'NoAuth', meta: { name: '无权限' }, component: () => import('../views/manager/403') },
       { path: 'home', name: 'Home', meta: { name: '系统首页' }, component: () => import('../views/manager/Home') },
       { path: 'admin', name: 'Admin', meta: { name: '管理员信息' }, component: () => import('../views/manager/Admin') },
       { path: 'user', name: 'User', meta: { name: '用户信息' }, component: () => import('../views/manager/User') },
+      { path: 'business', name: 'Business', meta: { name: '商家信息' }, component: () => import('../views/manager/Business') },
       { path: 'adminPerson', name: 'AdminPerson', meta: { name: '个人信息' }, component: () => import('../views/manager/AdminPerson') },
+      { path: 'businessPerson', name: 'BusinessPerson', meta: { name: '商家信息' }, component: () => import('../views/manager/BusinessPerson') },
       { path: 'password', name: 'Password', meta: { name: '修改密码' }, component: () => import('../views/manager/Password') },
       { path: 'notice', name: 'Notice', meta: { name: '公告信息' }, component: () => import('../views/manager/Notice') },
       { path: 'eventCategory', name: 'EventCategory', meta: { name: '日程事件分类信息' }, component: () => import('../views/manager/EventCategory') },
@@ -29,6 +30,9 @@ const routes = [
       { path: 'schedule', name: 'Schedule', meta: { name: '计划表信息' }, component: () => import('../views/manager/Schedule') },
       { path: 'team', name: 'Team', meta: { name: '团队信息' }, component: () => import('../views/manager/Team') },
       { path: 'comment', name: 'Comment', meta: { name: '评论信息' }, component: () => import('../views/manager/Comment') },
+      { path: 'templateCategory', name: 'TemplateCategory', meta: { name: '计划模板分类信息' }, component: () => import('../views/manager/TemplateCategory') },
+      { path: 'template', name: 'Template', meta: { name: '计划模板信息' }, component: () => import('../views/manager/Template') },
+      { path: 'order', name: 'Order', meta: { name: '订单信息' }, component: () => import('../views/manager/Order') },
     ]
   },
   {
@@ -38,6 +42,8 @@ const routes = [
     children: [
       { path: 'home', name: 'Home', meta: { name: '系统首页' }, component: () => import('../views/front/Home') },
       { path: 'person', name: 'Person', meta: { name: '个人信息' }, component: () => import('../views/front/Person') },
+      { path: 'eventDetail', name: 'EventDetail', meta: { name: '事件详情页' }, component: () => import('../views/front/EventDetail') },
+      { path: 'eventCategory', name: 'EventCategory', meta: { name: '分类计划页' }, component: () => import('../views/front/EventCategory') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },
