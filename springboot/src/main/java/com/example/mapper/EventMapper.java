@@ -39,8 +39,12 @@ public interface EventMapper {
     */
     List<Event> selectAll(Event event);
 
-    List<Event> selectByUserAndDate(Integer id, Date date);
+    @Select("select * from event,user,schedule,scheduleeventrelation where user.id=schedule.userId and schedule.id = scheduleeventrelation.scheduleId and event.id = scheduleeventrelation.eventId and user.id=#{id}")
+    List<Event> selectByUserAndDate(Integer id);
 
     @Select("select * from event order by count desc limit 10")
     List<Event> selectTop10();
+
+    @Select("select * from event where businessId = #{id}")
+    List<Event> selectByBusinessId(Integer id);
 }

@@ -16,7 +16,10 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="user" label="用户" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="time" label="评论时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="templateId" label="计划模板编号" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="eventId" label="事件编号" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="section" label="评论版块" show-overflow-tooltip></el-table-column>
         <el-table-column prop="commentContent" label="评论内容" show-overflow-tooltip></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
@@ -48,9 +51,20 @@
             <el-option v-for="item in userData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="templateId" label="计划模板编号">
-          <el-select v-model="form.templateId" placeholder="请选择用户">
+        <el-form-item style="width: auto" prop="section" label="评论版块">
+          <el-select v-model="form.section" placeholder="请选择评论版块" style="text-align: center; width: 340px">
+            <el-option label="日程事件" value="EVENT"></el-option>
+            <el-option label="日程模板" value="TEMPLATE"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="form.section === 'TEMPLATE'" prop="templateId" label="日程模板编号">
+          <el-select v-model="form.templateId" placeholder="请选择日程模板">
             <el-option v-for="item in templateData" :label="item.id" :value="item.id" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item v-show="form.section === 'EVENT'" prop="eventId" label="日程事件编号">
+          <el-select v-model="form.eventId" placeholder="请选择日程事件">
+            <el-option v-for="item in eventData" :label="item.id" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="commentContent" label="内容">
@@ -91,12 +105,14 @@ export default {
       ids: [],
       userData: [],
       templateData: [],
+      eventData: [],
     }
   },
   created() {
     this.load(1)
     this.loadUserName()
     this.loadTemplate()
+    this.loadEvent()
   },
   methods: {
     loadUserName(){
@@ -112,6 +128,15 @@ export default {
       this.$request.get('template/selectAll').then(res=>{
         if(res.code == '200'){
           this.templateData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadEvent(){
+      this.$request.get('event/selectAll').then(res=>{
+        if(res.code == '200'){
+          this.eventData = res.data
         }else{
           this.$message.error(res.msg)
         }

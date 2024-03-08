@@ -1,6 +1,7 @@
 package com.example.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 公告信息表
@@ -15,13 +16,43 @@ public class Order implements Serializable {
     /** 内容 */
     private Integer userId;
     /** 创建时间 */
-    private Integer businessId;
+    private Integer eventId;
     /** 创建人 */
     private String details;
 
     private String user;
 
     private String business;
+
+    private String phone;
+
+    private String event;
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    private Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public Integer getId() {
         return id;
@@ -47,12 +78,12 @@ public class Order implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getBusinessId() {
-        return businessId;
+    public Integer getEventId() {
+        return eventId;
     }
 
-    public void setBusinessId(Integer businessId) {
-        this.businessId = businessId;
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
     }
 
     public String getDetails() {

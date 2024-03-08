@@ -58,8 +58,8 @@ public class BusinessController {
     /**
      * 根据ID查询
      */
-    @GetMapping("/selectById/{id}")
-    public Result selectById(@PathVariable Integer id) {
+    @GetMapping("/selectById")
+    public Result selectById(@RequestParam Integer id) {
         Business business = businessService.selectById(id);
         return Result.success(business);
     }

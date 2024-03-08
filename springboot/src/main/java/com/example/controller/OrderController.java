@@ -73,6 +73,12 @@ public class OrderController {
         return Result.success(list);
     }
 
+    @GetMapping("/selectByUserId")
+    public Result selectByUserId(Integer id) {
+        List<Order> list = orderService.selectByUserId(id);
+        return Result.success(list);
+    }
+
     /**
      * 分页查询
      */

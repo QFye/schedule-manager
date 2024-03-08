@@ -17,9 +17,10 @@
               </div>
               <div style="text-align: center; font-size: 18px; height: 30px;margin: auto auto">总销量：{{eventData.count}}</div>
             </div>
-            <div style="text-align: center; font-size: 18px; height: 20px;margin: 0 auto">商家：{{eventData.businessName}}</div>
+            <div style="text-align: center; font-size: 18px; height: 20px;margin: 0 auto"><a href="#" @click="navTo('/front/business?id='+eventData.businessId)">商家：{{eventData.businessName}}</a></div>
             <div style="text-align: center; font-size: 18px; height: 20px;margin: 10px auto">时间段：{{eventData.start}}</div>
-            <div style="text-align: center; font-size: 20px; height: 20px;margin: 40px 0px 20px 0px;color: red; font-weight: bold" v-if="eventData.price !== 0">计划售价：{{eventData.price}}/元</div>
+            <div style="text-align: center; font-size: 18px; height: 20px;margin: 10px auto">事件地点：{{eventData.address}}</div>
+            <div style="text-align: center; font-size: 20px; height: 20px;margin: 10px 0px 20px 0px;color: red; font-weight: bold" v-if="eventData.price !== 0">计划售价：{{eventData.price}}/元</div>
             <div style="text-align: center; font-size: 20px; height: 20px;margin: 40px 20px 20px 20px;color: red; font-weight: bold" v-else>免费</div>
             <div style="display: flex; margin: 5px 0px 5px 40px">
               <div style="flex: 1; margin: 0 auto">
@@ -38,7 +39,22 @@
           <el-tab-pane label="计划详情" name="details">
             <div v-html="eventData.description" style="padding: 10px 20px"></div>
           </el-tab-pane>
-          <el-tab-pane label="评论" name="comments">comments</el-tab-pane>
+          <el-tab-pane label="评论" name="comments" style="padding: 10px 20px">
+            <div v-for="item in commentData">
+              <div style="display: flex; margin-top: 10px">
+                <div>
+                  <img :src="item.avatar" style="height: 60px; width: 60px; border-radius: 30px" alt="">
+                </div>
+                <div style="margin-left: 20px">
+                  <div style="font-size: 20px;font-weight: bold; margin-bottom: 5px">{{ item.name }}</div>
+                  <div>{{ item.time }}</div>
+                </div>
+              </div>
+              <div style="margin-top: 15px; min-height: 20px; font-size: 18px; margin-left: 5px; padding-bottom: 20px;margin-bottom: 5px;border-bottom: #cccccc 1px solid">
+                {{ item.commentContent }}
+              </div>
+            </div>
+          </el-tab-pane>
         </el-tabs>
       </div>
     </div>
@@ -56,10 +72,12 @@ export default {
       eventId: eventId,
       eventData: {},
       activeName: 'details',
+      commentData: [],
     }
   },
   mounted() {
     this.loadEvent()
+    this.loadComment()
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
@@ -67,6 +85,15 @@ export default {
       this.$request.get('event/selectById?id='+this.eventId).then(res=>{
         if(res.code == '200'){
           this.eventData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadComment(){
+      this.$request.get('comment/selectByEventId?id='+this.eventId).then(res=>{
+        if(res.code == '200'){
+          this.commentData = res.data
         }else{
           this.$message.error(res.msg)
         }

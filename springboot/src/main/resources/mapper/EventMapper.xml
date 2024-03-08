@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.EventMapper">
 
     <sql id="Base_Column_List">
-        event.id,event.name,event.start,event.last,event.description,event.img,event.categoryId,event.price,event.status,event.count,event.businessId
+        event.id,event.name,event.start,event.last,event.description,event.img,event.categoryId,event.price,event.status,event.count,event.businessId,event.address
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Event">
@@ -25,6 +25,7 @@
             <if test="status != null"> and status= #{status}</if>
             <if test="count != null"> and count= #{count}</if>
             <if test="businessId != null"> and businessId= #{businessId}</if>
+            <if test="address != null"> and event.address= #{event.address}</if>
         </where>
         order by event.id
     </select>
@@ -36,18 +37,6 @@
         left join eventCategory on event.categoryId = eventCategory.id
         left join business on event.businessId = business.id
         where event.id = #{event.id}
-    </select>
-
-    <select id="selectByUserAndDate" resultType="com.example.entity.Event">
-        select
-        <include refid="Base_Column_List" />, business.name as businessName
-        from event
-        left join scheduleEventRelation on event.id = ScheduleEventRelation.eventId
-        left join schedule on schedule.id = ScheduleEventRelation.scheduleId
-        left join user on user.id = schedule.userId
-        left join business on event.businessId = business.id
-        where user.id = #{id} and schedule.date = #{date}
-        order by schedule.count desc
     </select>
 
     <delete id="deleteById">
@@ -69,6 +58,7 @@
                 <if test="status != null">status,</if>
                 <if test="count != null">status,</if>
                 <if test="businessId != null">businessId,</if>
+                <if test="address != null">address,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -82,6 +72,7 @@
                 <if test="status != null">#{status},</if>
                 <if test="count != null">#{count},</if>
                 <if test="businessId != null">#{businessId},</if>
+                <if test="address != null">#{address},</if>
         </trim>
     </insert>
 
@@ -117,6 +108,9 @@
             </if>
             <if test="businessId != null">
                 businessId = #{businessId},
+            </if>
+            <if test="address != null">
+                address = #{address},
             </if>
         </set>
         where id = #{id} 

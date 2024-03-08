@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -82,6 +83,18 @@ public class EventController {
     @GetMapping("/selectByCategoryId")
     public Result selectByCategoryId(@RequestParam Integer id) {
         List<Event> list = eventService.selectByCategoryId(id);
+        return Result.success(list);
+    }
+
+    @GetMapping("/selectByBusinessId")
+    public Result selectByBusinessId(@RequestParam Integer id) {
+        List<Event> list = eventService.selectByBusinessId(id);
+        return Result.success(list);
+    }
+
+    @GetMapping("/selectByUserAndDate")
+    public Result selectByUserAndDate(@RequestParam Integer id) {
+        List<Event> list = eventService.selectByUserAndDate(id);
         return Result.success(list);
     }
 

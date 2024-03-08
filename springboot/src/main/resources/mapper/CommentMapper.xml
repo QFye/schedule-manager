@@ -5,11 +5,11 @@
 <mapper namespace="com.example.mapper.CommentMapper">
 
     <sql id="Base_Column_List">
-        id,userId,templateId,commentContent
+        id,userId,templateId,commentContent,section,time,eventId
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Comment">
-        select comment.id, comment.userId, comment.templateId, comment.commentContent, user.name as user
+        select comment.id, comment.userId, comment.templateId, comment.commentContent, comment.section, comment.time, comment.eventId, user.name as user
         from comment
         left join user on user.id = comment.userId
         <where>
@@ -17,6 +17,9 @@
             <if test="userId != null"> and userId= #{userId}</if>
             <if test="templateId"> and templateId= #{templateId}</if>
             <if test="commentContent != null"> and commentContent= #{commentContent}</if>
+            <if test="section != null"> and section= #{section}</if>
+            <if test="time != null"> and time= #{time}</if>
+            <if test="eventId != null"> and eventId= #{eventId}</if>
         </where>
         order by id
     </select>
@@ -40,12 +43,18 @@
                 <if test="userId != null">userId,</if>
                 <if test="templateId != null">templateId,</if>
                 <if test="commentContent != null">commentContent,</if>
+                <if test="section != null">section,</if>
+                <if test="time != null">time,</if>
+                <if test="eventId != null">eventId,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
                 <if test="userId != null">#{userId},</if>
                 <if test="templateId != null">#{templateId},</if>
                 <if test="commentContent != null">#{commentContent},</if>
+                <if test="section != null">#{section},</if>
+                <if test="time != null">#{time},</if>
+                <if test="eventId != null">#{eventId},</if>
         </trim>
     </insert>
 
@@ -60,6 +69,15 @@
             </if>
             <if test="commentContent != null">
                 commentContent = #{commentContent},
+            </if>
+            <if test="section != null">
+                section = #{section},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="eventId != null">
+                eventId = #{eventId},
             </if>
         </set>
         where id = #{id} 

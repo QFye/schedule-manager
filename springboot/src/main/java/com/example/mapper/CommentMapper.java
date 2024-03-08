@@ -37,4 +37,7 @@ public interface CommentMapper {
 
     @Select("select * from comment where name = #{name}")
     Comment selectByName(String name);
+
+    @Select("select comment.time as time, comment.commentContent as commentContent, user.name as name, user.avatar as avatar from comment,user,event where comment.userId = user.id and comment.eventId = event.id and event.id = #{id}")
+    List<Comment> selectByEventId(Integer id);
 }

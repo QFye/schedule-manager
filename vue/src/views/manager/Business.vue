@@ -19,6 +19,8 @@
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="phone" label="电话"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="address" label="地址"></el-table-column>
+        <el-table-column prop="description" label="商家简介"></el-table-column>
         <el-table-column label="头像">
           <template v-slot="scope">
             <div style="display: flex; align-items: center">
@@ -63,6 +65,12 @@
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" prop="address">
+          <el-input v-model="form.address" placeholder="地址"></el-input>
+        </el-form-item>
+        <el-form-item label="商家简介" prop="description">
+          <el-input v-model="form.description" placeholder="商家简介"></el-input>
         </el-form-item>
         <el-form-item label="头像">
           <el-upload

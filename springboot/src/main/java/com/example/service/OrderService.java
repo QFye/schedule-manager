@@ -7,6 +7,7 @@ import com.example.mapper.OrderMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -74,4 +75,6 @@ public class OrderService {
         return PageInfo.of(list);
     }
 
+
+    public List<Order> selectByUserId(Integer id) {return orderMapper.selectByUserId(id);}
 }

@@ -16,8 +16,9 @@
         <el-table-column type="selection" width="55" align="center"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="user" label="用户" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="business" label="商家名称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="event" label="事件名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="price" label="价格"></el-table-column>
+        <el-table-column prop="date" label="交易日期"></el-table-column>
         <el-table-column prop="details" label="详情信息"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
@@ -49,9 +50,9 @@
             <el-option v-for="item in userData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="businessId" label="商家">
-          <el-select v-model="form.businessId" placeholder="请选择商家">
-            <el-option v-for="item in businessData" :label="item.name" :value="item.id" :key="item.id"></el-option>
+        <el-form-item prop="eventId" label="事件">
+          <el-select v-model="form.eventId" placeholder="请选择事件">
+            <el-option v-for="item in eventData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="price" label="价格">
@@ -94,13 +95,13 @@ export default {
       },
       ids: [],
       userData: [],
-      businessData: [],
+      eventData: [],
     }
   },
   created() {
     this.load(1)
     this.loadUserName()
-    this.loadBusinessName()
+    this.loadEventName()
   },
   methods: {
     loadUserName(){
@@ -112,10 +113,10 @@ export default {
         }
       })
     },
-    loadBusinessName(){
-      this.$request.get('business/selectAll').then(res=>{
+    loadEventName(){
+      this.$request.get('event/selectAll').then(res=>{
         if(res.code == '200'){
-          this.businessData = res.data
+          this.eventData = res.data
         }else{
           this.$message.error(res.msg)
         }

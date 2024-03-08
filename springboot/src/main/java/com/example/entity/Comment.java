@@ -18,7 +18,37 @@ public class Comment extends Account implements Serializable {
 
     private String commentContent;
 
+    private String section;
+
+    private Date time;
+
+    private Integer eventId;
+
     private String user;
+
+    public String getSection() {
+        return section;
+    }
+
+    public void setSection(String section) {
+        this.section = section;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
+    }
+
+    public Integer getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(Integer eventId) {
+        this.eventId = eventId;
+    }
 
     public String getUser() {
         return user;

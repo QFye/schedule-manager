@@ -57,8 +57,8 @@ public class EventService {
     }
 
 
-    public List<Event> selectByUserAndDate(Integer id, Date date) {
-        return eventMapper.selectByUserAndDate(id, date);
+    public List<Event> selectByUserAndDate(Integer id) {
+        return eventMapper.selectByUserAndDate(id);
     }
 
     /**
@@ -84,4 +84,6 @@ public class EventService {
     public List<Event> selectByCategoryId(Integer id) {
         return eventMapper.selectByCategoryId(id);
     }
+
+    public List<Event> selectByBusinessId(Integer id) {return eventMapper.selectByBusinessId(id);}
 }

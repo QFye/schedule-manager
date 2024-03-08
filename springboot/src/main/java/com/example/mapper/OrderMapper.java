@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Order;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -33,5 +34,8 @@ public interface OrderMapper {
       * 查询所有
     */
     List<Order> selectAll(Order order);
+
+    @Select("select order.id as id, user.name as user, business.name as business, business.phone as phone, order.details as details, order.price as price,order.date as date, event.name as event from `order`,user,business,event where order.userId = user.id and order.eventId = event.id and event.businessId = business.id and user.id = #{id}")
+    List<Order> selectByUserId(Integer id);
 
 }

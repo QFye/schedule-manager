@@ -58,6 +58,12 @@ public class CommentController {
     /**
      * 根据ID查询
      */
+    @GetMapping("/selectByEventId")
+    public Result selectByEventId(@RequestParam Integer id) {
+        List<Comment> comment = commentService.selectByEventId(id);
+        return Result.success(comment);
+    }
+
     @GetMapping("/selectById/{id}")
     public Result selectById(@PathVariable Integer id) {
         Comment comment = commentService.selectById(id);

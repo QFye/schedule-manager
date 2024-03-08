@@ -44,6 +44,10 @@ const routes = [
       { path: 'person', name: 'Person', meta: { name: '个人信息' }, component: () => import('../views/front/Person') },
       { path: 'eventDetail', name: 'EventDetail', meta: { name: '事件详情页' }, component: () => import('../views/front/EventDetail') },
       { path: 'eventCategory', name: 'EventCategory', meta: { name: '分类计划页' }, component: () => import('../views/front/EventCategory') },
+      { path: 'business', name: 'Business', meta: { name: '商家店铺页' }, component: () => import('../views/front/Business') },
+      { path: 'schedule', name: 'Schedule', meta: { name: '计划表页' }, component: () => import('../views/front/Schedule') },
+      { path: 'teamHome', name: 'TeamHome', meta: { name: '团队首页' }, component: () => import('../views/front/TeamHome') },
+      { path: 'order', name: 'Order', meta: { name: '我的订单' }, component: () => import('../views/front/Order') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

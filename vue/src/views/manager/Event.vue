@@ -19,6 +19,7 @@
         <el-table-column prop="categoryName" label="事件类别" show-overflow-tooltip></el-table-column>
         <el-table-column prop="start" label="开始时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="last" label="持续时间" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="address" label="事件地点" show-overflow-tooltip></el-table-column>
         <el-table-column prop="status" label="事件状态" show-overflow-tooltip></el-table-column>
         <el-table-column prop="businessName" label="所属商家" show-overflow-tooltip></el-table-column>
         <el-table-column prop="count" label="总销量" show-overflow-tooltip></el-table-column>
@@ -70,6 +71,9 @@
         </el-form-item>
         <el-form-item prop="name" label="持续时间">
           <el-input v-model="form.last" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item prop="address" label="事件地点">
+          <el-input v-model="form.address" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="description" label="事件描述">
           <el-input v-model="form.description" autocomplete="off"></el-input>

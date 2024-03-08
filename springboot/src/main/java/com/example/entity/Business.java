@@ -25,6 +25,26 @@ public class Business extends Account implements Serializable {
     /** 角色标识 */
     private String role;
 
+    private String description;
+
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public Integer getId() {
         return id;

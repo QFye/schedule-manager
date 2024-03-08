@@ -25,6 +25,16 @@ public class User extends Account implements Serializable {
     /** 角色标识 */
     private String role;
 
+    private Float money;
+
+    public Float getMoney() {
+        return money;
+    }
+
+    public void setMoney(Float money) {
+        this.money = money;
+    }
+
     @Override
     public Integer getId() {
         return id;

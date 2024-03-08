@@ -6,7 +6,7 @@
       <div style="width: 76%;background-color: rgba(246,252,255,0.91); margin: 15px 20px 15px 18px">
         <div style="height: 30px; color: rgba(61,109,204,0.91); margin: 13px 12px 5px 12px; font-weight: bold;font-size: 18px">日程市场</div>
         <div style="display: flex">
-          <div style="flex: 2; border-radius: 10px;background-color: rgba(246,252,255,0.91)">
+          <div style="flex: 2; border-radius: 10px;background-color: rgba(246,252,255,0.91);padding-top: 3px">
             <div style="display: flex; margin: 14px 0px" v-for="item in categoryData">
               <img :src="item.img" style="width:20px; height:20px; margin: 0px 25px">
               <div><a href="#" @click="navTo('/front/eventCategory?id='+item.id)">{{ item.name }}</a></div>
@@ -39,8 +39,8 @@
           </div>
           <div style="flex: 4; height: 500px">
             <div style="display: flex; height: 30px; margin-top: 5px">
-              <img src="@/assets/imgs/schedule_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-              <div style="margin-left: 15px">编辑我的日程表>></div>
+              <img src="@/assets/imgs/schedule_icon.png" style="height: 20px; width: 20px; margin-left: 30px" @click="navTo('/front/schedule')">
+              <div style="margin-left: 15px"><a href="#" @click="navTo('/front/schedule')">编辑我的日程表>></a></div>
             </div>
             <div style="height: 380px; border-radius: 10px;background-color: rgba(246,252,255,0.91);margin-left: 10px;margin-right: 10px">
               <div style="margin-left: 25px; color: rgba(61,109,204,0.91); font-weight: bold;height: 30px; padding: 8px 5px 0px 0px">今日计划</div>
@@ -53,18 +53,18 @@
                 <div style="flex: 2.5">编辑事件</div>
               </div>
             </div>
-            <div style="height: 100px; display: flex; padding-left: 5px; margin-top: 18px">
+            <div style="height: 100px; display: flex; padding-left: 5px; margin-top: 22px">
               <div style="padding: 5px 15px 15px 15px">
                 <img src="@/assets/imgs/repository_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
                 <div style="margin-left: 10px">日程仓库</div>
               </div>
               <div style="padding: 5px 15px 15px 15px">
                 <img src="@/assets/imgs/team_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px">我的团队</div>
+                <div style="margin-left: 10px"><a href="#" @click="navTo('/front/teamHome')">我的团队</a></div>
               </div>
               <div style="padding: 5px 15px 15px 15px">
                 <img src="@/assets/imgs/order_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px">我的订单</div>
+                <div style="margin-left: 10px"><a href="#" @click="navTo('/front/order')">我的钱包</a></div>
               </div>
               <div style="padding: 5px 15px 15px 15px">
                 <img src="@/assets/imgs/favourites_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
@@ -97,6 +97,7 @@ export default {
 
   data() {
     return {
+      user: JSON.parse(localStorage.getItem('xm-user')||'{}'),
       categoryData: [],
       scheduleData: [],
       carouselData1: [
@@ -134,7 +135,7 @@ export default {
       })
     },
     loadSchedule(){
-      this.$request.get('event/selectAll').then(res=>{
+      this.$request.get('event/selectByUserAndDate?id='+this.user.id).then(res=>{
         if(res.code == '200'){
           this.scheduleData = res.data
         }else{

@@ -74,4 +74,5 @@ public class CommentService {
         return PageInfo.of(list);
     }
 
+    public List<Comment> selectByEventId(Integer id) {return commentMapper.selectByEventId(id);}
 }

@@ -5,21 +5,23 @@
 <mapper namespace="com.example.mapper.OrderMapper">
 
     <sql id="Base_Column_List">
-        id,price,userId,businessId,details
+        id,price,userId,eventId,details,date
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Order">
         select
-        order.id, order.price, order.details, user.name as user, business.name as business
+        order.id, order.price, order.details, order.date, user.name as user, event.name as event, business.name as business
         from `order`
         left join user on order.userId = user.id
-        left join business on order.businessId = business.id
+        left join event on order.eventId = event.id
+        left join business on event.businessId = business.id
         <where>
             <if test="id != null"> and order.id= #{order.id}</if>
             <if test="price != null"> and price= #{price}</if>
             <if test="userId != null"> and order.userId= #{order.userId}</if>
-            <if test="businessId != null"> and order.businessId= #{order.businessId}</if>
+            <if test="eventId != null"> and order.eventId= #{order.eventId}</if>
             <if test="details != null"> and details= #{details}</if>
+            <if test="date != null"> and date= #{date}</if>
         </where>
         order by order.id
     </select>
@@ -42,15 +44,17 @@
                 <if test="id != null">id,</if>
                 <if test="price != null">price,</if>
                 <if test="userId != null">userId,</if>
-                <if test="businessId != null">businessId,</if>
+                <if test="eventId != null">eventId,</if>
                 <if test="details != null">details,</if>
+                <if test="date != null">date,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
                 <if test="price != null">#{price},</if>
                 <if test="userId != null">#{userId},</if>
-                <if test="businessId != null">#{businessId},</if>
+                <if test="eventId != null">#{eventId},</if>
                 <if test="details != null">#{details},</if>
+                <if test="date != null">#{date},</if>
         </trim>
     </insert>
 
@@ -63,11 +67,14 @@
             <if test="userId != null">
                 userId = #{userId},
             </if>
-            <if test="businessId != null">
-                businessId = #{businessId},
+            <if test="eventId != null">
+                eventId = #{eventId},
             </if>
             <if test="details != null">
                 details = #{details},
+            </if>
+            <if test="date != null">
+                date = #{date},
             </if>
         </set>
         where id = #{id} 

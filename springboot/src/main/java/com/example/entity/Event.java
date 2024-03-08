@@ -32,6 +32,8 @@ public class Event implements Serializable {
 
     private Integer count;
 
+    private String address;
+
     private Integer categoryId;
 
     private Integer businessId;
@@ -41,6 +43,14 @@ public class Event implements Serializable {
     private String categoryName;
 
     private String categoryImg;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
     public String getCategoryImg() {
         return categoryImg;
