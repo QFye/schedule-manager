@@ -68,7 +68,7 @@
               </div>
               <div style="padding: 5px 15px 15px 15px">
                 <img src="@/assets/imgs/favourites_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px">我的收藏</div>
+                <div style="margin-left: 10px"><a href="#" @click="navTo('/front/collect')">我的收藏</a></div>
               </div>
             </div>
           </div>

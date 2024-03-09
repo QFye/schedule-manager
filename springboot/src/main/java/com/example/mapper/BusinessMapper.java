@@ -37,4 +37,7 @@ public interface BusinessMapper {
 
     @Select("select * from business where username = #{username}")
     Business selectByUsername(String username);
+
+    @Select("select * from business, user, collect where collect.userId = user.id and collect.businessId = business.id and user.id = #{id}")
+    List<Business> selectByUserId(Integer id);
 }

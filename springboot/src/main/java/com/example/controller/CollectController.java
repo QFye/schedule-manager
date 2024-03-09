@@ -1,8 +1,8 @@
 package com.example.controller;
 
 import com.example.common.Result;
-import com.example.entity.Business;
-import com.example.service.BusinessService;
+import com.example.entity.Collect;
+import com.example.service.CollectService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,21 +10,21 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
- * 用户前端操作接口
+ * 公告信息表前端操作接口
  **/
 @RestController
-@RequestMapping("/business")
-public class BusinessController {
+@RequestMapping("/collect")
+public class CollectController {
 
     @Resource
-    private BusinessService businessService;
+    private CollectService collectService;
 
     /**
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Business business) {
-        businessService.add(business);
+    public Result add(@RequestBody Collect collect) {
+        collectService.add(collect);
         return Result.success();
     }
 
@@ -33,7 +33,13 @@ public class BusinessController {
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
-        businessService.deleteById(id);
+        collectService.deleteById(id);
+        return Result.success();
+    }
+
+    @DeleteMapping("/deleteByBusinessId/{id}")
+    public Result deleteByBusinessId(@PathVariable Integer id) {
+        collectService.deleteByBusinessId(id);
         return Result.success();
     }
 
@@ -42,40 +48,35 @@ public class BusinessController {
      */
     @DeleteMapping("/delete/batch")
     public Result deleteBatch(@RequestBody List<Integer> ids) {
-        businessService.deleteBatch(ids);
+        collectService.deleteBatch(ids);
         return Result.success();
     }
+
 
     /**
      * 修改
      */
     @PutMapping("/update")
-    public Result updateById(@RequestBody Business business) {
-        businessService.updateById(business);
+    public Result updateById(@RequestBody Collect collect) {
+        collectService.updateById(collect);
         return Result.success();
     }
 
     /**
      * 根据ID查询
      */
-    @GetMapping("/selectById")
-    public Result selectById(@RequestParam Integer id) {
-        Business business = businessService.selectById(id);
-        return Result.success(business);
-    }
-
-    @GetMapping("/selectByUserId")
-    public Result selectByUserId(@RequestParam Integer id) {
-        List<Business> business = businessService.selectByUserId(id);
-        return Result.success(business);
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id) {
+        Collect collect = collectService.selectById(id);
+        return Result.success(collect);
     }
 
     /**
      * 查询所有
      */
     @GetMapping("/selectAll")
-    public Result selectAll(Business business ) {
-        List<Business> list = businessService.selectAll(business);
+    public Result selectAll(Collect collect ) {
+        List<Collect> list = collectService.selectAll(collect);
         return Result.success(list);
     }
 
@@ -83,10 +84,10 @@ public class BusinessController {
      * 分页查询
      */
     @GetMapping("/selectPage")
-    public Result selectPage(Business business,
+    public Result selectPage(Collect collect,
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<Business> page = businessService.selectPage(business, pageNum, pageSize);
+        PageInfo<Collect> page = collectService.selectPage(collect, pageNum, pageSize);
         return Result.success(page);
     }
 

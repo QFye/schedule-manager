@@ -5,15 +5,19 @@
         <el-col style="text-align: center; font-size: 18px;background-color: #bbcffc; height: 30px; width: 90px; margin: 10px 20px;border-radius: 15px; display: flex; padding-left: 8px">
           商家信息
         </el-col>
-        <el-col style="display: flex; margin: auto 200px">
+        <el-col style="display: flex; margin: auto 100px">
           <div style="height: 120px; width: 120px">
             <img :src="businessData.avatar" style="height: 120px;width: 120px;border-radius: 60px">
           </div>
-          <div style="flex: 1">
-            <div style="height: 30px; min-width:200px;line-height: 30px;font-size: 25px;font-weight: bold; margin-left: 150px;margin-right: 150px;margin-bottom: 10px">{{businessData.name}}</div>
-            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 150px">联系电话：{{businessData.phone}}</div>
-            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 150px">邮箱：{{businessData.email}}</div>
-            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 150px">地址：{{businessData.address}}</div>
+          <div style="flex: 0.6;">
+            <div style="height: 30px; min-width:200px;line-height: 30px;font-size: 25px;font-weight: bold; margin-left: 80px;margin-right: 20px;margin-bottom: 10px">{{businessData.name}}</div>
+            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">联系电话：{{businessData.phone}}</div>
+            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">邮箱：{{businessData.email}}</div>
+            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">地址：{{businessData.address}}</div>
+          </div>
+          <div style="flex:0.3;margin-right: 30px">
+            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:35%;height: 30px;line-height: 30px;border-radius: 5px">发消息</div>
+            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:35%;height: 30px;line-height: 30px;border-radius: 5px"><a href="#" @click="movToFavourites()">收藏商家</a></div>
           </div>
 
         </el-col>
@@ -61,6 +65,16 @@ export default {
   methods: {
     navTo(url){
       location.href=url
+    },
+    movToFavourites(){
+      let data = {userId: this.user.id, businessId: this.businessData.id}
+      this.$request.post('/collect/add', data).then(res=>{
+        if(res.code === '200'){
+          this.$message.success('收藏成功')
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
     },
     loadBusiness(){
       this.$request.get('business/selectById?id='+this.businessId).then(res=>{

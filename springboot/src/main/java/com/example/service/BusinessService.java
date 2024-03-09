@@ -132,4 +132,5 @@ public class BusinessService {
         businessMapper.updateById(dbBusiness);
     }
 
+    public List<Business> selectByUserId(Integer id) {return businessMapper.selectByUserId(id);}
 }

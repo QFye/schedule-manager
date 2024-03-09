@@ -51,6 +51,7 @@
             <el-menu-item index="/templateCategory" v-if="user.role === 'ADMIN'">计划模板分类信息</el-menu-item>
             <el-menu-item index="/template">计划模板信息</el-menu-item>
             <el-menu-item index="/order">订单信息</el-menu-item>
+            <el-menu-item index="/collect">收藏信息</el-menu-item>
           </el-submenu>
 
           <el-submenu  v-if="user.role === 'ADMIN'" index="user">

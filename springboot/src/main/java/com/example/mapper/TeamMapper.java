@@ -37,4 +37,10 @@ public interface TeamMapper {
 
     @Select("select * from team where name = #{name}")
     Team selectByName(String name);
+
+    @Select("select *, user.name as user from team,user,teammemberrelationship where teammemberrelationship.userId = user.id and teammemberrelationship.teamId = team.id and user.id=#{id}")
+    List<Team> selectByUserId(Integer id);
+
+    @Select("select *, M.memberCount as memberCount from team left join user on team.userId = user.id left join (select team.id as tid, COUNT(user.id) as memberCount from team left join TeamMemberRelationship on TeamMemberRelationship.teamId = team.id left join user on TeamMemberRelationship.userId = user.id group by team.id) as M on M.tid = team.id where team.userId = user.id and user.id = #{id}")
+    List<Team> selectByManagerId(Integer id);
 }

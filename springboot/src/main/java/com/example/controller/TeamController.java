@@ -64,6 +64,18 @@ public class TeamController {
         return Result.success(team);
     }
 
+    @GetMapping("/selectByUserId")
+    public Result selectByUserId(@RequestParam Integer id) {
+        List<Team> team = teamService.selectByUserId(id);
+        return Result.success(team);
+    }
+
+    @GetMapping("/selectByManagerId")
+    public Result selectByManagerId(@RequestParam Integer id) {
+        List<Team> team = teamService.selectByManagerId(id);
+        return Result.success(team);
+    }
+
     /**
      * 查询所有
      */

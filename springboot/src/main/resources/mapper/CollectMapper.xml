@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CollectMapper">
+
+    <sql id="Base_Column_List">
+        collect.id,collect.userId,collect.businessId
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Collect">
+        select
+        <include refid="Base_Column_List" />, user.name as user, business.name as business
+        from collect
+        left join user on collect.userId = user.id
+        left join business on collect.businessId = business.id
+        <where>
+            <if test="id != null"> and collect.id= #{collect.id}</if>
+            <if test="userId != null"> and userId= #{userId}</if>
+            <if test="businessId != null"> and businessId= #{businessId}</if>
+        </where>
+        order by collect.id
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Collect">
+        select
+        <include refid="Base_Column_List" />
+        from collect
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from collect
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Collect" useGeneratedKeys="true">
+        insert into collect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="userId != null">userId,</if>
+                <if test="businessId != null">businessId,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="userId != null">#{userId},</if>
+                <if test="businessId != null">#{businessId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Collect">
+        update collect
+        <set>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="businessId != null">
+                businessId = #{businessId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>

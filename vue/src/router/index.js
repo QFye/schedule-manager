@@ -33,6 +33,7 @@ const routes = [
       { path: 'templateCategory', name: 'TemplateCategory', meta: { name: '计划模板分类信息' }, component: () => import('../views/manager/TemplateCategory') },
       { path: 'template', name: 'Template', meta: { name: '计划模板信息' }, component: () => import('../views/manager/Template') },
       { path: 'order', name: 'Order', meta: { name: '订单信息' }, component: () => import('../views/manager/Order') },
+      { path: 'collect', name: 'Collect', meta: { name: '收藏信息' }, component: () => import('../views/manager/Collect') },
     ]
   },
   {
@@ -48,6 +49,7 @@ const routes = [
       { path: 'schedule', name: 'Schedule', meta: { name: '计划表页' }, component: () => import('../views/front/Schedule') },
       { path: 'teamHome', name: 'TeamHome', meta: { name: '团队首页' }, component: () => import('../views/front/TeamHome') },
       { path: 'order', name: 'Order', meta: { name: '我的订单' }, component: () => import('../views/front/Order') },
+      { path: 'collect', name: 'Collect', meta: { name: '我的收藏' }, component: () => import('../views/front/Collect') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },
