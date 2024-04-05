@@ -18,34 +18,43 @@ create table schedule_system.admin
 
 create table schedule_system.business
 (
-    id       int auto_increment
+    id          int auto_increment
         primary key,
-    name     varchar(255)                   not null,
-    password varchar(255)                   not null,
-    phone    varchar(32)                    null,
-    email    varchar(32)                    null,
-    avatar   varchar(255)                   null,
-    role     varchar(32) default 'BUSINESS' not null,
-    username varchar(255)                   not null
+    name        varchar(255)                       not null,
+    password    varchar(255)                       not null,
+    phone       varchar(32)                        null,
+    email       varchar(32)                        null,
+    avatar      varchar(255)                       null,
+    role        varchar(32)  default 'BUSINESS'    not null,
+    username    varchar(255)                       not null,
+    description varchar(255) default '该商家未设置商家简介。' not null,
+    address     varchar(255) default '无'           null
 )
     comment 'basic business information';
+
+
 
 create table schedule_system.event
 (
     id          int auto_increment
         primary key,
-    name        varchar(100)                              not null,
-    description longtext                                  null,
-    img         varchar(255)                              null,
-    start       datetime    default CURRENT_TIMESTAMP     not null,
-    last        datetime    default '0000-00-00 00:00:00' not null,
-    categoryId  int         default 1                     not null,
-    price       float       default 0                     not null,
-    status      varchar(32) default 'STATIC'              not null,
-    count       int         default 0                     not null,
-    businessId  int                                       null
+    name        varchar(100)                           not null,
+    description longtext                               null,
+    img         varchar(255)                           null,
+    start       datetime     default CURRENT_TIMESTAMP not null,
+    last        int          default 0                 not null,
+    categoryId  int          default 1                 not null,
+    price       float        default 0                 not null,
+    status      varchar(32)  default 'STATIC'          not null,
+    count       int          default 0                 not null,
+    businessId  int                                    null,
+    address     varchar(255) default '无'               not null
 )
     comment 'basic event information';
+
+
+
+
 
 create table schedule_system.eventcategory
 (
@@ -109,9 +118,12 @@ create table schedule_system.user
     email    varchar(100)                null,
     phone    varchar(20)                 null,
     avatar   varchar(255)                not null,
-    role     varchar(255) default 'USER' not null
+    role     varchar(255) default 'USER' not null,
+    money    float        default 0      not null
 )
     comment 'basic user information';
+
+
 
 create table schedule_system.schedule
 (
@@ -182,15 +194,22 @@ create table schedule_system.comment
 (
     id             int auto_increment
         primary key,
-    userId         int  not null,
-    templateId     int  not null,
-    commentContent text not null,
+    userId         int                                   not null,
+    templateId     int                                   null,
+    commentContent text                                  not null,
+    time           datetime    default CURRENT_TIMESTAMP null,
+    section        varchar(32) default 'EVENT'           not null,
+    eventId        int                                   null,
+    constraint comment_event_id_fk
+        foreign key (eventId) references schedule_system.event (id),
     constraint comment_table_schedule_table_schedule_id_fk
         foreign key (templateId) references schedule_system.template (id),
     constraint comment_table_user_table_account_number_fk
         foreign key (userId) references schedule_system.user (id)
 )
     comment 'comment basic information';
+
+
 
 create table schedule_system.templateapplication
 (
@@ -215,6 +234,19 @@ create table schedule_system.templateeventrelation
         foreign key (templateId) references schedule_system.template (id)
 )
     comment 'relationship between templates and events';
+
+create table schedule_system.collect
+(
+    id         int auto_increment
+        primary key,
+    userId     int not null,
+    businessId int not null,
+    constraint collect_business_id_fk
+        foreign key (businessId) references schedule_system.business (id),
+    constraint collect_user_id_fk
+        foreign key (userId) references schedule_system.user (id)
+)
+    comment 'basic collect information';
 
 
 

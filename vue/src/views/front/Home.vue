@@ -6,13 +6,13 @@
       <div style="width: 76%;background-color: rgba(246,252,255,0.91); margin: 15px 20px 15px 18px">
         <div style="height: 30px; color: rgba(61,109,204,0.91); margin: 13px 12px 5px 12px; font-weight: bold;font-size: 18px">日程市场</div>
         <div style="display: flex">
-          <div style="flex: 2; border-radius: 10px;background-color: rgba(246,252,255,0.91);padding-top: 3px">
+          <div style="width:17%; border-radius: 10px;background-color: rgba(246,252,255,0.91);padding-top: 3px">
             <div style="display: flex; margin: 14px 0px" v-for="item in categoryData">
               <img :src="item.img" style="width:20px; height:20px; margin: 0px 25px">
-              <div><a href="#" @click="navTo('/front/eventCategory?id='+item.id)">{{ item.name }}</a></div>
+              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap"><a href="#" @click="navTo('/front/eventCategory?id='+item.id)">{{ item.name }}</a></div>
             </div>
           </div>
-          <div style="flex: 5; height: 500px; margin-left: 5px">
+          <div style="width:46%; height: 500px; margin-left: 5px">
             <div style="margin-bottom:10px;">
               <el-carousel height="290px" style="border-radius: 10px">
                 <el-carousel-item v-for="item in carouselData1">
@@ -37,49 +37,74 @@
               </div>
             </div>
           </div>
-          <div style="flex: 4; height: 500px">
+          <div style="width:37%; height: 500px">
             <div style="display: flex; height: 30px; margin-top: 5px">
               <img src="@/assets/imgs/schedule_icon.png" style="height: 20px; width: 20px; margin-left: 30px" @click="navTo('/front/schedule')">
               <div style="margin-left: 15px"><a href="#" @click="navTo('/front/schedule')">编辑我的日程表>></a></div>
             </div>
-            <div style="height: 380px; border-radius: 10px;background-color: rgba(246,252,255,0.91);margin-left: 10px;margin-right: 10px">
-              <div style="margin-left: 25px; color: rgba(61,109,204,0.91); font-weight: bold;height: 30px; padding: 8px 5px 0px 0px">今日计划</div>
-              <div style="display: flex;padding: 10px 10px 25px 25px" v-for="item in scheduleData">
-                <div style="flex: 2">
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto;height: 380px; border-radius: 10px;background-color: rgba(246,252,255,0.91);margin-left: 10px;margin-right: 10px">
+              <div style="margin-left: 25px; color: rgba(61,109,204,0.91); font-weight: bold;font-size: 16px;height: 30px; padding: 8px 5px 25px 0px">今日计划</div>
+              <div style="display: flex;padding: 10px 10px 25px 25px; min-height: 15px; text-align: center" v-for="item in scheduleData">
+                <div style="flex: 0.1">
                   <img src="@/assets/imgs/completed_icon.png" style="height: 20px; width: 20px">
                 </div>
-                <div style="flex: 3; text-align: center">{{item.start}}</div>
-                <div style="flex: 4;margin: 0 0 15px 5px; text-align: center">{{item.name}}</div>
-                <div style="flex: 2.5">编辑事件</div>
+                <div style="flex: 0.4; text-align: center">{{item.start | extractTime}}~{{calculateEndTime(item)}}</div>
+                <div style="flex: 0.5; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">{{item.name}}</div>
               </div>
-            </div>
-            <div style="height: 100px; display: flex; padding-left: 5px; margin-top: 22px">
-              <div style="padding: 5px 15px 15px 15px">
-                <img src="@/assets/imgs/repository_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px">日程仓库</div>
+            </ul>
+            <div style="width:100%; height: 100px; display: flex; padding-left: 5px; margin-top: 22px">
+              <div style="width:25% ;padding: 5px 15px 15px 15px; align-items: center; justify-content: center">
+                <div style="text-align: center;">
+                  <img src="@/assets/imgs/repository_icon.png" style="height: 20px; width: 20px; vertical-align: middle;">
+                </div>
+                <div style="margin: auto auto; font-size: 14px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap"><a href="#" @click="navTo('/front/repository')">日程仓库</a></div>
               </div>
-              <div style="padding: 5px 15px 15px 15px">
-                <img src="@/assets/imgs/team_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px"><a href="#" @click="navTo('/front/teamHome')">我的团队</a></div>
+              <div style="width:25% ;padding: 5px 15px 15px 15px">
+                <div style="text-align: center;">
+                  <img src="@/assets/imgs/team_icon.png" style="height: 20px; width: 20px">
+                </div>
+                <div style="margin: auto auto; font-size: 14px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap"><a href="#" @click="navTo('/front/teamHome')">我的团队</a></div>
               </div>
-              <div style="padding: 5px 15px 15px 15px">
-                <img src="@/assets/imgs/order_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px"><a href="#" @click="navTo('/front/order')">我的钱包</a></div>
+              <div style="width:25% ;padding: 5px 15px 15px 15px">
+                <div style="text-align: center;">
+                  <img src="@/assets/imgs/order_icon.png" style="height: 20px; width: 20px">
+                </div>
+                <div style="margin: auto auto; font-size: 14px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap"><a href="#" @click="navTo('/front/order')">我的钱包</a></div>
               </div>
-              <div style="padding: 5px 15px 15px 15px">
-                <img src="@/assets/imgs/favourites_icon.png" style="height: 20px; width: 20px; margin-left: 30px">
-                <div style="margin-left: 10px"><a href="#" @click="navTo('/front/collect')">我的收藏</a></div>
+              <div style="width:25% ;padding: 5px 15px 15px 15px">
+                <div style="text-align: center;">
+                  <img src="@/assets/imgs/favourites_icon.png" style="height: 20px; width: 20px">
+                </div>
+                <div style="margin: auto auto; font-size: 14px; text-align: center; text-overflow: ellipsis; overflow: hidden; white-space: nowrap"><a href="#" @click="navTo('/front/collect')">我的收藏</a></div>
               </div>
             </div>
           </div>
         </div>
 
         <div style="margin: 20px 10px 10px 10px; font-weight: bold; color: rgb(255,255,255); font-size: 20px; height: 40px; background-color: #ff70a9; width: 110px; text-align: center;line-height: 40px; border-radius: 20px">热门计划</div>
-        <div style="padding: 0 0 0px 5px">
+        <div style="padding: 5px 5px 5px 5px">
           <el-row>
-            <el-col :span="5" v-for="item in eventData">
-              <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 200px; height: 190px; border-radius: 10px">
-              <div style="font-weight: 500; margin-top: 8px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+            <el-col :span="5" v-for="item in eventData" style="width: 20%">
+              <div style="width: 100%; object-fit: contain; height: 200px; margin-bottom: 10px">
+                <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 100%; height: 100%; object-fit: contain;border-radius: 10px; margin: 0 auto">
+              </div>
+
+              <div style="font-weight: 500; margin-top: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-weight: bold">
+                {{ item.name }}</div>
+              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold">￥{{ item.price }}</div>
+            </el-col>
+          </el-row>
+        </div>
+
+        <div style="margin: 20px 10px 10px 10px; font-weight: bold; color: rgb(255,255,255); font-size: 20px; height: 40px; background-color: #ff70a9; width: 110px; text-align: center;line-height: 40px; border-radius: 20px">为您推荐</div>
+        <div style="padding: 5px 5px 5px 5px">
+          <el-row>
+            <el-col :span="5" v-for="item in eventData" style="width: 20%">
+              <div style="width: 100%; object-fit: contain; height: 200px; margin-bottom: 10px">
+                <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 100%; height: 100%; object-fit: contain;border-radius: 10px; margin: 0 auto">
+              </div>
+
+              <div style="font-weight: 500; margin-top: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;font-weight: bold">
                 {{ item.name }}</div>
               <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold">￥{{ item.price }}</div>
             </el-col>
@@ -95,27 +120,55 @@
 
 export default {
 
+  filters: {
+    extractDate(datetime) {
+      // 使用JavaScript的Date对象解析datetime字符串
+      const dateObject = new Date(datetime);
+
+      // 提取日期部分
+      const year = dateObject.getFullYear();
+      const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
+      const day = ("0" + dateObject.getDate()).slice(-2);
+
+      // 返回格式化的日期字符串
+      return `${year}-${month}-${day}`;
+    },
+
+    extractTime(datetime) {
+      // 同样解析datetime字符串
+      const dateObject = new Date(datetime);
+
+      // 提取时间部分
+      const hours = ("0" + dateObject.getHours()).slice(-2);
+      const minutes = ("0" + dateObject.getMinutes()).slice(-2);
+      const seconds = ("0" + dateObject.getSeconds()).slice(-2);
+
+      // 返回格式化的时间字符串
+      return `${hours}:${minutes}:${seconds}`;
+    }
+  },
   data() {
     return {
       user: JSON.parse(localStorage.getItem('xm-user')||'{}'),
       categoryData: [],
       scheduleData: [],
       carouselData1: [
-          require('@/assets/imgs/bg.jpg'),
-          require('@/assets/imgs/bg1.jpg'),
-          require('@/assets/imgs/logo.png'),
+          require('@/assets/imgs/ad1.jpg'),
+          require('@/assets/imgs/ad2.jpg'),
+          require('@/assets/imgs/ad3.jpg'),
       ],
       carouselData2: [
-        require('@/assets/imgs/bg.jpg'),
-        require('@/assets/imgs/bg1.jpg'),
-        require('@/assets/imgs/logo.png'),
+        require('@/assets/imgs/ad4.jpg'),
+        require('@/assets/imgs/ad5.jpg'),
+        require('@/assets/imgs/ad6.jpg'),
       ],
       carouselData3: [
-        require('@/assets/imgs/bg.jpg'),
-        require('@/assets/imgs/bg1.jpg'),
-        require('@/assets/imgs/logo.png'),
+        require('@/assets/imgs/ad7.jpg'),
+        require('@/assets/imgs/ad8.jpg'),
+        require('@/assets/imgs/ad9.jpg'),
       ],
       eventData: [],
+      currentDate: new Date().toLocaleDateString(),
     }
   },
   mounted() {
@@ -125,6 +178,17 @@ export default {
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
+    calculateEndTime(item) {
+      let startDate = new Date(item.start);
+      let endDate = new Date(startDate.getTime() + item.last * 1000);
+
+      // 将结束时间转换为HH:MM:SS格式
+      let hours = String(endDate.getHours()).padStart(2, '0');
+      let minutes = String(endDate.getMinutes()).padStart(2, '0');
+      let seconds = String(endDate.getSeconds()).padStart(2, '0');
+
+      return `${hours}:${minutes}:${seconds}`;
+    },
     loadCategory(){
       this.$request.get('eventCategory/selectAll').then(res=>{
         if(res.code == '200'){
@@ -135,7 +199,7 @@ export default {
       })
     },
     loadSchedule(){
-      this.$request.get('event/selectByUserAndDate?id='+this.user.id).then(res=>{
+      this.$request.get('event/selectByUserAndDate?id='+this.user.id+'&date='+this.currentDate).then(res=>{
         if(res.code == '200'){
           this.scheduleData = res.data
         }else{
@@ -157,6 +221,8 @@ export default {
     }
   }
 }
+
+
 </script>
 
 <style scoped>

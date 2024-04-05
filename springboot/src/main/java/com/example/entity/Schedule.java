@@ -12,20 +12,22 @@ public class Schedule implements Serializable {
 
     /** ID */
     private Integer id;
-    /** 分类编号 */
-    private Integer categoryId;
     /** 计划日期 */
     private Date date;
     /** 用户编号 */
     private Integer userId;
 
-    private String categoryName;
-
-    private List<Event> events;
-
     private String user;
 
     private Integer eventCount;
+
+    public Schedule() {
+    }
+
+    public Schedule(Date date, Integer userId) {
+        this.date = date;
+        this.userId = userId;
+    }
 
     public Integer getEventCount() {
         return eventCount;
@@ -51,13 +53,6 @@ public class Schedule implements Serializable {
         this.id = id;
     }
 
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
 
     public Date getDate() {
         return date;
@@ -75,19 +70,4 @@ public class Schedule implements Serializable {
         this.userId = userId;
     }
 
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public List<Event> getEvents() {
-        return events;
-    }
-
-    public void setEvents(List<Event> events) {
-        this.events = events;
-    }
 }

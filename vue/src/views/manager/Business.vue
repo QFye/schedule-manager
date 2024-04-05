@@ -20,7 +20,6 @@
         <el-table-column prop="phone" label="电话"></el-table-column>
         <el-table-column prop="email" label="邮箱"></el-table-column>
         <el-table-column prop="address" label="地址"></el-table-column>
-        <el-table-column prop="description" label="商家简介"></el-table-column>
         <el-table-column label="头像">
           <template v-slot="scope">
             <div style="display: flex; align-items: center">
@@ -30,6 +29,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="role" label="角色"></el-table-column>
+        <el-table-column prop="description" label="商家简介"></el-table-column>
         <el-table-column label="操作" align="center" width="180">
           <template v-slot="scope">
             <el-button size="mini" type="primary" plain @click="handleEdit(scope.row)">编辑</el-button>
@@ -69,9 +69,6 @@
         <el-form-item label="地址" prop="address">
           <el-input v-model="form.address" placeholder="地址"></el-input>
         </el-form-item>
-        <el-form-item label="商家简介" prop="description">
-          <el-input v-model="form.description" placeholder="商家简介"></el-input>
-        </el-form-item>
         <el-form-item label="头像">
           <el-upload
               class="avatar-uploader"
@@ -82,6 +79,9 @@
           >
             <el-button type="primary">上传头像</el-button>
           </el-upload>
+        </el-form-item>
+        <el-form-item label="商家简介" prop="description">
+          <div id="editor" style="width:100%"></div>
         </el-form-item>
       </el-form>
 
@@ -94,8 +94,23 @@
 
   </div>
 </template>
-
 <script>
+import E from 'wangeditor'
+
+let editor
+function initWangEditor(content){
+  setTimeout(()=>{
+    if(!editor){
+      editor = new E("#editor")
+      editor.config.placeholder = "请输入内容"
+      editor.config.uploadFileName = "file"
+      editor.config.uploadImgServer = "http://localhost:9090/files/wang/upload"
+      editor.create()
+    }
+    editor.txt.html(content)
+  }, 0)
+}
+
 export default {
   name: "Business",
   data() {
@@ -122,15 +137,18 @@ export default {
   methods: {
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
+      initWangEditor('')
       this.fromVisible = true   // 打开弹窗
     },
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
+      initWangEditor(this.form.description || '')
       this.fromVisible = true   // 打开弹窗
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          this.form.description = editor.txt.html()
           this.$request({
             url: this.form.id ? '/business/update' : '/business/add',
             method: this.form.id ? 'PUT' : 'POST',

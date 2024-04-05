@@ -22,6 +22,7 @@
         <el-table-column prop="address" label="事件地点" show-overflow-tooltip></el-table-column>
         <el-table-column prop="status" label="事件状态" show-overflow-tooltip></el-table-column>
         <el-table-column prop="businessName" label="所属商家" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="userName" label="所属用户" show-overflow-tooltip></el-table-column>
         <el-table-column prop="count" label="总销量" show-overflow-tooltip></el-table-column>
         <el-table-column prop="description" label="事件描述" show-overflow-tooltip></el-table-column>
         <el-table-column label="事件图标">
@@ -83,6 +84,11 @@
             <el-option v-for="item in businessData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item prop="userId" label="所属用户">
+          <el-select v-model="form.userId" placeholder="请选择所属用户">
+            <el-option v-for="item in userData" :label="item.name" :value="item.id" :key="item.id"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="事件图标">
           <el-upload
               class="avatar-uploader"
@@ -132,17 +138,28 @@ export default {
       ids: [],
       categoryData: [],
       businessData: [],
+      userData: [],
     }
   },
   created() {
     this.load(1)
-    this.loadGategory()
+    this.loadCategory()
     this.loadBusiness()
+    this.loadUser()
   },
   methods: {
-    loadGategory(){
+    loadUser(){
+      this.$request.get('user/selectAll').then(res=>{
+        if(res.code === '200'){
+          this.userData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadCategory(){
       this.$request.get('eventCategory/selectAll').then(res=>{
-        if(res.code == '200'){
+        if(res.code === '200'){
           this.categoryData = res.data
         }else{
           this.$message.error(res.msg)
@@ -151,7 +168,7 @@ export default {
     },
     loadBusiness(){
       this.$request.get('business/selectAll').then(res=>{
-        if(res.code == '200'){
+        if(res.code === '200'){
           this.businessData = res.data
         }else{
           this.$message.error(res.msg)

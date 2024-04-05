@@ -5,14 +5,15 @@
 <mapper namespace="com.example.mapper.EventMapper">
 
     <sql id="Base_Column_List">
-        event.id,event.name,event.start,event.last,event.description,event.img,event.categoryId,event.price,event.status,event.count,event.businessId,event.address
+        event.id,event.name,event.start,event.last,event.description,event.img,event.categoryId,event.price,event.status,event.count,event.businessId,event.address,event.userId
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Event">
-        select *, eventCategory.name as categoryName, business.name as businessName
+        select *, eventCategory.name as categoryName, business.name as businessName, user.name as userName
         from event
         left join eventCategory on event.categoryId = eventCategory.id
         left join business on event.businessId = business.id
+        left join user on event.userId = user.id
         <where>
             <if test="id != null"> and event.id= #{event.id}</if>
             <if test="name != null"> and event.name like concat('%', #{event.name}, '%')</if>
@@ -26,16 +27,18 @@
             <if test="count != null"> and count= #{count}</if>
             <if test="businessId != null"> and businessId= #{businessId}</if>
             <if test="address != null"> and event.address= #{event.address}</if>
+            <if test="userId != null"> and event.userId= #{event.userId}</if>
         </where>
         order by event.id
     </select>
 
     <select id="selectById" resultType="com.example.entity.Event">
         select
-        <include refid="Base_Column_List" />, business.name as businessName, eventCategory.name as categoryName, eventCategory.img as categoryImg
+        <include refid="Base_Column_List" />, business.name as businessName, eventCategory.name as categoryName, eventCategory.img as categoryImg, user.name as userName
         from event
         left join eventCategory on event.categoryId = eventCategory.id
         left join business on event.businessId = business.id
+        left join user on event.userId = user.id
         where event.id = #{event.id}
     </select>
 
@@ -44,21 +47,22 @@
         where  id = #{id}
     </delete>
 
-    <insert id="insert" parameterType="com.example.entity.Event" useGeneratedKeys="true">
+    <insert id="insert" parameterType="com.example.entity.Event" useGeneratedKeys="true" keyProperty="id">
         insert into event
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
                 <if test="name != null">name,</if>
-                <if test="start != null">start,</if>
                 <if test="price != null">price,</if>
+                <if test="start != null">start,</if>
                 <if test="last != null">last,</if>
                 <if test="description != null">description,</if>
                 <if test="img != null">img,</if>
                 <if test="categoryId != null">categoryId,</if>
                 <if test="status != null">status,</if>
-                <if test="count != null">status,</if>
+                <if test="count != null">count,</if>
                 <if test="businessId != null">businessId,</if>
                 <if test="address != null">address,</if>
+                <if test="userId != null">userId,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -73,6 +77,7 @@
                 <if test="count != null">#{count},</if>
                 <if test="businessId != null">#{businessId},</if>
                 <if test="address != null">#{address},</if>
+                <if test="userId != null">#{userId},</if>
         </trim>
     </insert>
 
@@ -111,6 +116,9 @@
             </if>
             <if test="address != null">
                 address = #{address},
+            </if>
+            <if test="userId != null">
+                userId = #{userId},
             </if>
         </set>
         where id = #{id} 

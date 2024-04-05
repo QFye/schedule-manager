@@ -40,7 +40,7 @@
         where  id = #{id}
     </delete>
 
-    <insert id="insert" parameterType="com.example.entity.Team" useGeneratedKeys="true">
+    <insert id="insert" parameterType="com.example.entity.Team" useGeneratedKeys="true" keyProperty="id">
         insert into team
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">id,</if>

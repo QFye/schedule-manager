@@ -1,12 +1,17 @@
 package com.example.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import com.example.common.Result;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -91,5 +96,22 @@ public class FileController {
         System.out.println("删除文件" + flag + "成功");
     }
 
+    @PostMapping("/wang/upload")
+    public Map<String, Object>  wangEditorUpload(MultipartFile file){
+        String flag = System.currentTimeMillis()+"";
+        String fileName = file.getOriginalFilename();
+        try{
+            FileUtil.writeBytes(file.getBytes(), filePath+flag+"-"+fileName);
+            System.out.println(fileName+"--上传成功");
+            Thread.sleep(1L);
+        }catch (Exception e){
+            System.err.println(fileName+"--文件上传失败");
+        }
+        String http="http://"+ip+":"+port+"/files/";
+        Map<String, Object> resMap = new HashMap<>();
+        resMap.put("errno",0);
+        resMap.put("data", CollUtil.newArrayList(Dict.create().set("url",http+flag+"-"+fileName)));
+        return resMap;
+    }
 
 }

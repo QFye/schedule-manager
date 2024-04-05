@@ -23,8 +23,8 @@ public class TeamController {
      * 新增
      */
     @PostMapping("/add")
-    public Result add(@RequestBody Team team) {
-        teamService.add(team);
+    public Result add(@RequestBody Team team, @RequestParam Integer userId) {
+        teamService.add(team, userId);
         return Result.success();
     }
 

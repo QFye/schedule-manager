@@ -5,39 +5,49 @@
         <el-col style="text-align: center; font-size: 18px;background-color: #bbcffc; height: 30px; width: 90px; margin: 10px 20px;border-radius: 15px; display: flex; padding-left: 8px">
           商家信息
         </el-col>
-        <el-col style="display: flex; margin: auto 100px">
-          <div style="height: 120px; width: 120px">
+        <el-col style="width: 100%;display: flex; margin: auto 100px">
+          <div style="height: 120px; width: 16%">
             <img :src="businessData.avatar" style="height: 120px;width: 120px;border-radius: 60px">
           </div>
-          <div style="flex: 0.6;">
-            <div style="height: 30px; min-width:200px;line-height: 30px;font-size: 25px;font-weight: bold; margin-left: 80px;margin-right: 20px;margin-bottom: 10px">{{businessData.name}}</div>
-            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">联系电话：{{businessData.phone}}</div>
-            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">邮箱：{{businessData.email}}</div>
-            <div style="height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">地址：{{businessData.address}}</div>
+          <div style="width: 40%;">
+            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;height: 30px; min-width:200px;line-height: 30px;font-size: 25px;font-weight: bold; margin-left: 80px;margin-right: 20px;margin-bottom: 10px">{{businessData.name}}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">联系电话：{{businessData.phone}}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">邮箱：{{businessData.email}}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;height: 30px; width:200px;line-height: 30px;font-size: 15px;margin: 2.5px 80px">地址：{{businessData.address}}</div>
           </div>
-          <div style="flex:0.3;margin-right: 30px">
-            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:35%;height: 30px;line-height: 30px;border-radius: 5px">发消息</div>
-            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:35%;height: 30px;line-height: 30px;border-radius: 5px"><a href="#" @click="movToFavourites()">收藏商家</a></div>
+          <div style="width: 44%;margin-right: 30px">
+            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:25%;height: 30px;line-height: 30px;border-radius: 5px"><a href="#" @click="infoVisible = true">发消息</a></div>
+            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:25%;height: 30px;line-height: 30px;border-radius: 5px"><a href="#" @click="movToFavourites()">收藏商家</a></div>
           </div>
+          <el-dialog title="消息" :visible.sync="infoVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+              该功能还在开发中哦~
+            </div>
+            <div slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="infoVisible = false" style="height: 50%">确认</el-button>
+            </div>
+          </el-dialog>
 
         </el-col>
         <el-col style="margin: 0px 10px">
-          <div style="text-align: center; font-size: 18px;background-color: #bbcffc; height: 30px; width: 90px; margin: 10px 0px;border-radius: 15px; display: flex; padding-left: 8px">
+          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;text-align: center; font-size: 18px;background-color: #bbcffc; height: 30px; width: 90px; margin: 10px 0px;border-radius: 15px; display: flex; padding-left: 8px">
             商家简介
           </div>
         </el-col>
-        <el-col v-html="businessData.description" style="min-height: 30px; width:870px;line-height: 30px;font-size: 15px;margin: 0 18px">
+        <el-col v-html="businessData.description" style="min-height: 30px; width:100%;line-height: 30px;font-size: 15px;margin: 0 18px">
 
         </el-col>
       </el-row>
     </div>
-    <div style="width: 60%; display: flex;background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 20px 20px">
+    <div style="width: 60%; background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 20px 20px">
       <el-row :gutter="20">
-        <el-col :span="6" v-for="item in eventData">
-          <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 170px; height: 160px; border-radius: 10px">
-          <div style="font-weight: 500; margin-top: 8px; text-overflow: ellipsis; overflow: hidden; width: 240px;white-space: nowrap">
+        <el-col v-for="item in eventData" :span="6" style="width: 20%">
+          <div style="width: 100%; object-fit: contain; height: 140px">
+            <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 100%; height: 140px; border-radius: 10px">
+          </div>
+          <div style="font-weight: 500; margin-top: 0px; text-overflow: ellipsis; overflow: hidden; width: 100%;white-space: nowrap; margin-top: 10px">
             {{ item.name }}</div>
-          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; width: 240px;margin-top: 5px;color: red;font-weight: bold">￥{{ item.price }}</div>
+          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; width: 100%;margin-top: 5px;color: red;font-weight: bold">￥{{ item.price }}</div>
         </el-col>
       </el-row>
     </div>
@@ -55,6 +65,7 @@ export default {
       businessId: businessId,
       businessData: {},
       eventData: [],
+      infoVisible: false
     }
   },
   mounted() {

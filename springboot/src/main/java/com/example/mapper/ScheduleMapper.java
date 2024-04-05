@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Schedule;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
 import java.util.List;
@@ -35,5 +36,6 @@ public interface ScheduleMapper {
     */
     List<Schedule> selectAll(Schedule schedule);
 
+    @Select("select * from schedule where userId=#{id} and DATE(schedule.date)=#{date}")
     Schedule selectByIdAndDate(Integer id, Date date);
 }

@@ -29,12 +29,31 @@ public class EventController {
         return Result.success();
     }
 
+    @PostMapping("/addInSchedule")
+    public Result addInSchedule(@RequestBody Event event, @RequestParam Date date, @RequestParam Integer userId) {
+        eventService.addInSchedule(event, date, userId);
+        return Result.success();
+    }
+
+    @PostMapping("/addRepository")
+    public Result addRepository(@RequestBody Event event, @RequestParam Integer userId) {
+        eventService.addRepository(event, userId);
+        return Result.success();
+    }
+
     /**
      * 删除
      */
     @DeleteMapping("/delete/{id}")
     public Result deleteById(@PathVariable Integer id) {
         eventService.deleteById(id);
+        return Result.success();
+    }
+
+
+    @DeleteMapping("/deleteInSchedule/{id}")
+    public Result deleteInSchedule(@PathVariable Integer id,@RequestParam Date date,@RequestParam Integer userId) {
+        eventService.deleteInSchedule(id, date, userId);
         return Result.success();
     }
 
@@ -65,6 +84,13 @@ public class EventController {
         return Result.success(event);
     }
 
+    @GetMapping("/selectFromRepository")
+    public Result selectFromRepository(@RequestParam Integer eventId, @RequestParam Integer userId) {
+        Event event = eventService.selectFromRepository(eventId, userId);
+        return Result.success(event);
+    }
+
+
     /**
      * 查询所有
      */
@@ -93,9 +119,15 @@ public class EventController {
     }
 
     @GetMapping("/selectByUserAndDate")
-    public Result selectByUserAndDate(@RequestParam Integer id) {
-        List<Event> list = eventService.selectByUserAndDate(id);
+    public Result selectByUserAndDate(@RequestParam Integer id, @RequestParam Date date) {
+        List<Event> list = eventService.selectByUserAndDate(id, date);
         return Result.success(list);
+    }
+
+    @GetMapping("/selectPersonal")
+    public Result selectPersonal(@RequestParam Integer id) {
+        List<Event> event = eventService.selectPersonal(id);
+        return Result.success(event);
     }
 
     /**

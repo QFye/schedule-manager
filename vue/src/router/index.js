@@ -50,6 +50,7 @@ const routes = [
       { path: 'teamHome', name: 'TeamHome', meta: { name: '团队首页' }, component: () => import('../views/front/TeamHome') },
       { path: 'order', name: 'Order', meta: { name: '我的订单' }, component: () => import('../views/front/Order') },
       { path: 'collect', name: 'Collect', meta: { name: '我的收藏' }, component: () => import('../views/front/Collect') },
+      { path: 'repository', name: 'Repository', meta: { name: '日程仓库' }, component: () => import('../views/front/Repository') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

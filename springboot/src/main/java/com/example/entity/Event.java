@@ -19,7 +19,7 @@ public class Event implements Serializable {
     /** 起始时间 */
     private Date start;
     /** 持续时间 */
-    private Date last;
+    private Long last;
 
     /** 详细描述 */
     private String description;
@@ -42,7 +42,27 @@ public class Event implements Serializable {
 
     private String categoryName;
 
+    private String userName;
+
     private String categoryImg;
+
+    private Integer userId;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
     public String getAddress() {
         return address;
@@ -149,11 +169,11 @@ public class Event implements Serializable {
         this.start = start;
     }
 
-    public Date getLast() {
+    public Long getLast() {
         return last;
     }
 
-    public void setLast(Date last) {
+    public void setLast(Long last) {
         this.last = last;
     }
 

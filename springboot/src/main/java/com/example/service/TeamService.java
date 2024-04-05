@@ -24,8 +24,9 @@ public class TeamService {
     /**
      * 新增
      */
-    public void add(Team team) {
+    public void add(Team team, Integer userId) {
         teamMapper.insert(team);
+        teamMapper.insertRelation(team, userId);
     }
 
     /**

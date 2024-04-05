@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Team;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public interface TeamMapper {
       * 新增
     */
     int insert(Team team);
+
+    @Insert("insert into teammemberrelationship (teamId, userId) VALUES (#{team.id}, #{userId})")
+    int insertRelation(Team team, Integer userId);
 
     /**
       * 删除

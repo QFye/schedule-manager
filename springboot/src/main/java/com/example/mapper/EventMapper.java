@@ -1,6 +1,10 @@
 package com.example.mapper;
 
 import com.example.entity.Event;
+import com.example.entity.Schedule;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.Date;
@@ -11,7 +15,7 @@ import java.util.List;
 */
 public interface EventMapper {
 
-    @Select("select * from event where categoryId = #{id}")
+    @Select("select * from event where categoryId = #{id} and status = 'STATIC'")
     List<Event> selectByCategoryId(Integer id);
 
     /**
@@ -39,12 +43,27 @@ public interface EventMapper {
     */
     List<Event> selectAll(Event event);
 
-    @Select("select * from event,user,schedule,scheduleeventrelation where user.id=schedule.userId and schedule.id = scheduleeventrelation.scheduleId and event.id = scheduleeventrelation.eventId and user.id=#{id}")
-    List<Event> selectByUserAndDate(Integer id);
+    @Select("select *, eventCategory.name as categoryName from event,user,schedule,scheduleeventrelation,eventCategory where event.categoryId = eventCategory.id and user.id=schedule.userId and schedule.id = scheduleeventrelation.scheduleId and event.id = scheduleeventrelation.eventId and user.id=#{userId} and DATE(event.start) = #{searchDate} order by event.start")
+    List<Event> selectByUserAndDate(@Param("userId") Integer id, @Param("searchDate") Date date);
 
-    @Select("select * from event order by count desc limit 10")
+    @Select("select * from event where event.status = 'STATIC' order by count desc limit 10")
     List<Event> selectTop10();
 
-    @Select("select * from event where businessId = #{id}")
+    @Select("select * from event where businessId = #{id} and status = 'STATIC'")
     List<Event> selectByBusinessId(Integer id);
+
+    @Select("select *, eventCategory.name as categoryName from event,repository,eventCategory where event.categoryId = eventCategory.id and repository.userId = #{id} and event.id = repository.eventId and status = 'STATIC'")
+    List<Event> selectPersonal(Integer id);
+
+    @Insert("insert into repository (eventId, userId) VALUES (#{event.id}, #{userId})")
+    int addRepository(Event event, Integer userId);
+
+    @Insert("insert into ScheduleEventRelation (eventId, scheduleId) VALUES (#{event.id}, #{schedule.id})")
+    void insertIntoSchedule(Event event, Schedule schedule);
+
+    @Delete("delete from ScheduleEventRelation where eventId = #{id} and scheduleId = #{schedule.id}")
+    void deleteInSchedule(Integer id, Schedule schedule);
+
+    @Select("select * from event, repository where event.id = repository.eventId and event.id=#{eventId} and repository.userId = #{userId} and status = 'STATIC'")
+    Event selectFromRepository(Integer eventId, Integer userId);
 }

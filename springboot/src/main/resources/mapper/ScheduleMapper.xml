@@ -5,19 +5,17 @@
 <mapper namespace="com.example.mapper.ScheduleMapper">
 
     <sql id="Base_Column_List">
-        id,categoryId,date,userId
+        id,date,userId
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Schedule">
-        select schedule.id, schedule.categoryId, date, userId, scheduleCategory.name as categoryName, user.name as user, COUNT(event.id) as eventCount
+        select schedule.id, date, userId, user.name as user, COUNT(event.id) as eventCount
         from schedule
-        left join scheduleCategory on schedule.categoryId = scheduleCategory.id
         left join user on schedule.userId = user.id
         left join ScheduleEventRelation on schedule.id = ScheduleEventRelation.scheduleId
         left join event on ScheduleEventRelation.eventId = event.id
         <where>
             <if test="id != null"> and schedule.id= #{schedule.id}</if>
-            <if test="categoryId != null"> and categoryId= #{categoryId}</if>
             <if test="date != null"> and schedule.date= #{schedule.date}</if>
             <if test="userId != null"> and schedule.userId= #{schedule.userId}</if>
         </where>
@@ -31,19 +29,12 @@
         where id = #{id}
     </select>
 
-    <select id="selectByIdAndDate" resultType="com.example.entity.Schedule">
-        select
-        <include refid="Base_Column_List" />
-        from schedule
-        where id = #{id} and date = #{date}
-    </select>
-
     <delete id="deleteById">
         delete from schedule
         where  id = #{id}
     </delete>
 
-    <insert id="insert" parameterType="com.example.entity.Schedule" useGeneratedKeys="true">
+    <insert id="insert" parameterType="com.example.entity.Schedule" useGeneratedKeys="true" keyProperty="id">
         insert into schedule
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>

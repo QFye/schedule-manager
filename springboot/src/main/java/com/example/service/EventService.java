@@ -1,7 +1,9 @@
 package com.example.service;
 
 import com.example.entity.Event;
+import com.example.entity.Schedule;
 import com.example.mapper.EventMapper;
+import com.example.mapper.ScheduleMapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ public class EventService {
 
     @Resource
     private EventMapper eventMapper;
+    @Resource
+    private ScheduleMapper scheduleMapper;
 
     /**
      * 新增
@@ -57,8 +61,8 @@ public class EventService {
     }
 
 
-    public List<Event> selectByUserAndDate(Integer id) {
-        return eventMapper.selectByUserAndDate(id);
+    public List<Event> selectByUserAndDate(Integer id, Date date) {
+        return eventMapper.selectByUserAndDate(id, date);
     }
 
     /**
@@ -86,4 +90,30 @@ public class EventService {
     }
 
     public List<Event> selectByBusinessId(Integer id) {return eventMapper.selectByBusinessId(id);}
+
+    public List<Event> selectPersonal(Integer id) {return eventMapper.selectPersonal(id);}
+
+    public void addRepository(Event event, Integer userId) {
+        eventMapper.updateById(event);
+        eventMapper.addRepository(event, userId);}
+
+    public void addInSchedule(Event event, Date date, Integer userId) {
+        eventMapper.insert(event);
+        Schedule schedule = scheduleMapper.selectByIdAndDate(userId, date);
+        if(schedule == null){
+            schedule = new Schedule(date, userId);
+            scheduleMapper.insert(schedule);
+        }
+        eventMapper.insertIntoSchedule(event, schedule);
+    }
+
+    public void deleteInSchedule(Integer id, Date date, Integer userId) {
+        Schedule schedule = scheduleMapper.selectByIdAndDate(userId, date);
+        eventMapper.deleteInSchedule(id, schedule);
+        eventMapper.deleteById(id);
+    }
+
+    public Event selectFromRepository(Integer eventId, Integer userId) {
+        return eventMapper.selectFromRepository(eventId, userId);
+    }
 }
