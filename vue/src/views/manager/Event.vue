@@ -67,17 +67,23 @@
             <el-option v-for="item in categoryData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item prop="name" label="开始时间">
-          <el-input v-model="form.start" autocomplete="off"></el-input>
+        <el-form-item prop="start" label="开始时间">
+          <el-time-picker
+              v-model="form.start"
+              type="time"
+              placeholder="选择时间">
+          </el-time-picker>
         </el-form-item>
-        <el-form-item prop="name" label="持续时间">
-          <el-input v-model="form.last" autocomplete="off"></el-input>
+        <el-form-item prop="last" label="持续时间">
+          <el-time-picker
+              v-model="displayLast"
+            @change="handleChange"
+            type="time"
+            placeholder="选择时间">
+          </el-time-picker>
         </el-form-item>
         <el-form-item prop="address" label="事件地点">
           <el-input v-model="form.address" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item prop="description" label="事件描述">
-          <el-input v-model="form.description" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="businessId" label="所属商家">
           <el-select v-model="form.businessId" placeholder="请选择所属商家">
@@ -88,6 +94,9 @@
           <el-select v-model="form.userId" placeholder="请选择所属用户">
             <el-option v-for="item in userData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item prop="price" label="价格">
+          <el-input v-model="form.price" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="事件图标">
           <el-upload
@@ -100,8 +109,8 @@
             <el-button type="primary">上传图标</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item prop="price" label="价格">
-          <el-input v-model="form.price" autocomplete="off"></el-input>
+        <el-form-item label="事件描述" prop="description">
+          <div id="editor" style="width:100%"></div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -115,6 +124,21 @@
 </template>
 
 <script>
+import E from 'wangeditor'
+
+let editor
+function initWangEditor(content){
+  setTimeout(()=>{
+    if(!editor){
+      editor = new E("#editor")
+      editor.config.placeholder = "请输入内容"
+      editor.config.uploadFileName = "file"
+      editor.config.uploadImgServer = "http://localhost:9090/files/wang/upload"
+      editor.create()
+    }
+    editor.txt.html(content)
+  }, 0)
+}
 export default {
   name: "Event",
   data() {
@@ -139,6 +163,7 @@ export default {
       categoryData: [],
       businessData: [],
       userData: [],
+      displayLast: new Date(2016, 9, 6, 0, 0),
     }
   },
   created() {
@@ -147,7 +172,34 @@ export default {
     this.loadBusiness()
     this.loadUser()
   },
+  computed: {
+    formattedLast(last) {
+      // 将毫秒数转换为"HH:mm:ss"格式
+      let totalSeconds = last / 1000;
+      let hours = Math.floor(totalSeconds / 3600);
+      let minutes = Math.floor((totalSeconds % 3600) / 60);
+      let seconds = Math.floor(totalSeconds % 60);
+
+      // 补零操作，确保时分秒两位显示
+      hours = ("0" + hours).slice(-2);
+      minutes = ("0" + minutes).slice(-2);
+      seconds = ("0" + seconds).slice(-2);
+
+      return `${hours}:${minutes}:${seconds}`;
+    },
+  },
   methods: {
+    handleChange() {
+      let value = this.displayLast.toLocaleTimeString()
+      // 假设 value 是 "HH:mm:ss" 格式的时间字符串
+      let timeArray = value.split(':');
+      let hours = parseInt(timeArray[0]);
+      let minutes = parseInt(timeArray[1]);
+      let seconds = parseInt(timeArray[2]);
+
+      // 更新 item.last 的值
+      this.form.last = hours * 3600 + minutes * 60 + seconds;
+    },
     loadUser(){
       this.$request.get('user/selectAll').then(res=>{
         if(res.code === '200'){
@@ -177,15 +229,18 @@ export default {
     },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
+      initWangEditor('')
       this.fromVisible = true   // 打开弹窗
     },
     handleEdit(row) {   // 编辑数据
       this.form = JSON.parse(JSON.stringify(row))  // 给form对象赋值  注意要深拷贝数据
+      initWangEditor(this.form.description || '')
       this.fromVisible = true   // 打开弹窗
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+          this.form.description = editor.txt.html()
           this.$request({
             url: this.form.id ? '/event/update' : '/event/add',
             method: this.form.id ? 'PUT' : 'POST',

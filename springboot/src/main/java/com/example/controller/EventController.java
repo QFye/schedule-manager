@@ -41,6 +41,18 @@ public class EventController {
         return Result.success();
     }
 
+    @PostMapping("/addInRepository")
+    public Result addInRepository(@RequestBody Event event, @RequestParam Integer userId) {
+        eventService.addInRepository(event, userId);
+        return Result.success();
+    }
+
+    @PostMapping("/addRepositoryOnly")
+    public Result addRepositoryOnly(@RequestBody Event event, @RequestParam Integer userId) {
+        eventService.addRepositoryOnly(event, userId);
+        return Result.success();
+    }
+
     /**
      * 删除
      */
@@ -106,6 +118,18 @@ public class EventController {
         return Result.success(list);
     }
 
+    @GetMapping("/recommend")
+    public Result recommend() {
+        List<Event> list = eventService.recommend(null, 10);
+        return Result.success(list);
+    }
+
+    @GetMapping("/recommendByCategory/{categoryId}")
+    public Result recommend(@PathVariable Integer categoryId) {
+        List<Event> list = eventService.recommend(categoryId, 5);
+        return Result.success(list);
+    }
+
     @GetMapping("/selectByCategoryId")
     public Result selectByCategoryId(@RequestParam Integer id) {
         List<Event> list = eventService.selectByCategoryId(id);
@@ -138,6 +162,14 @@ public class EventController {
                              @RequestParam(defaultValue = "1") Integer pageNum,
                              @RequestParam(defaultValue = "10") Integer pageSize) {
         PageInfo<Event> page = eventService.selectPage(event, pageNum, pageSize);
+        return Result.success(page);
+    }
+
+    @GetMapping("/selectRepositoryPage/{repositoryUserId}")
+    public Result selectRepositoryPage(Event event, @PathVariable Integer repositoryUserId,
+                             @RequestParam(defaultValue = "1") Integer pageNum,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<Event> page = eventService.selectRepositoryPage(event, repositoryUserId, pageNum, pageSize);
         return Result.success(page);
     }
 

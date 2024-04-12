@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.example.entity.Collect;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -37,4 +38,7 @@ public interface CollectMapper {
 
     @Delete("delete from collect where collect.businessId = #{id}")
     void deleteByBusinessId(Integer id);
+
+    @Select("select * from collect where userId = #{userId} and businessId = #{businessId}")
+    Collect selectByUserAndBusiness(Integer userId, Integer businessId);
 }

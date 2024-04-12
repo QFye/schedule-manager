@@ -1,16 +1,16 @@
 package com.example.service;
 
-import com.example.entity.Event;
-import com.example.entity.Schedule;
-import com.example.mapper.EventMapper;
-import com.example.mapper.ScheduleMapper;
+import com.example.entity.*;
+import com.example.mapper.*;
+import com.example.utils.TokenUtils;
+import com.example.utils.UserCF;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 公告信息表业务处理
@@ -22,6 +22,16 @@ public class EventService {
     private EventMapper eventMapper;
     @Resource
     private ScheduleMapper scheduleMapper;
+    @Resource
+    private CollectMapper collectMapper;
+    @Resource
+    private OrderMapper orderMapper;
+    @Resource
+    private CommentMapper commentMapper;
+    @Resource
+    private UserMapper userMapper;
+    @Resource
+    private RepositoryMapper repositoryMapper;
 
     /**
      * 新增
@@ -95,7 +105,7 @@ public class EventService {
 
     public void addRepository(Event event, Integer userId) {
         eventMapper.updateById(event);
-        eventMapper.addRepository(event, userId);}
+    }
 
     public void addInSchedule(Event event, Date date, Integer userId) {
         eventMapper.insert(event);
@@ -115,5 +125,92 @@ public class EventService {
 
     public Event selectFromRepository(Integer eventId, Integer userId) {
         return eventMapper.selectFromRepository(eventId, userId);
+    }
+
+    public void addRepositoryOnly(Event event, Integer userId) {
+        eventMapper.addRepository(event, userId);
+    }
+
+    public List<Event> recommend(Integer categoryId, int total) {
+        List<Order> orders = orderMapper.selectAll(null);
+        List<Comment> comments = commentMapper.selectAll(null);
+        List<Repository> repositories = repositoryMapper.selectAll(null);
+        List<User> users = userMapper.selectAll(null);
+        List<Event> events;
+        if(categoryId == null)
+            events = eventMapper.selectAll(null);
+        else
+            events = eventMapper.selectByCategoryId(categoryId);
+
+        List<RelateDTO> results = new ArrayList<>();
+        List<Event> ret = new ArrayList<>();
+
+        if(events.isEmpty()){
+            return ret;
+        }
+
+        for(User user:users){
+            Integer userId = user.getId();
+            for(Event event:events){
+                if(event.getStatus() == "STATIC"){
+                    Integer eventId = event.getId();
+                    int index = 1;
+                    Optional<Comment> commentOptional = comments.stream().filter(x->x.getEventId().equals(eventId) && x.getUserId().equals(userId)).findFirst();
+                    if(commentOptional.isPresent()){
+                        index += 1;
+                    }
+                    Optional<Order> orderOptional = orders.stream().filter(x->x != null && x.getEventId() != null && x.getEventId().equals(eventId) && x.getUserId().equals(userId)).findFirst();
+                    if(orderOptional.isPresent()){
+                        index += 3;
+                    }
+                    Optional<Repository> repositoryOptional = repositories.stream().filter(x->x != null && x.getEventId() != null && x.getEventId().equals(eventId) && x.getUserId().equals(userId)).findFirst();
+                    if(repositoryOptional.isPresent()){
+                        index += 2;
+                    }
+                    RelateDTO relateDTO = new RelateDTO(userId, eventId, index);
+                    results.add(relateDTO);
+                }
+            }
+        }
+
+        Account user = TokenUtils.getCurrentUser();
+        List<Integer> eventIds = UserCF.recommend(user.getId(), results);
+        List<Event> res = eventIds.stream().map(eventId->events.stream().filter(x->x.getStatus().equals("STATIC") && x.getId().equals(eventId)).findFirst().orElse(null)).limit(6).collect(Collectors.toList());
+
+        if(res.isEmpty()){
+            return getRandomEvents(total, categoryId);
+        }
+        if(res.size() < total){
+            int num = total - res.size();
+            List<Event> list = getRandomEvents(num, categoryId);
+            ret.addAll(list);
+            //ret.addAll(res);
+        }
+        return ret;
+    }
+
+    private List<Event> getRandomEvents(int num, Integer categoryId) {
+        List<Event> list = new ArrayList<>(num);
+        List<Event> events;
+        if(categoryId == null)
+            events = eventMapper.selectAllSTATIC(null);
+        else
+            events = eventMapper.selectByCategoryId(categoryId);
+        for (int i = 0; i < num; i++) {
+            int index = new Random().nextInt(events.size());
+            list.add(events.get(index));
+        }
+        return list;
+    }
+
+    public PageInfo<Event> selectRepositoryPage(Event event, Integer repositoryUserId, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Event> list = eventMapper.selectAllFromRepository(event, repositoryUserId);
+        return PageInfo.of(list);
+    }
+
+    public void addInRepository(Event event, Integer userId) {
+        eventMapper.insert(event);
+        repositoryMapper.insert(new Repository(userId, event.getId()));
     }
 }

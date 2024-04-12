@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="logo-container">
+      <img src="@/assets/imgs/homelogo.png" alt="星迹计划管理系统Logo" class="logo-img">
+    </div>
     <div style="width: 400px; padding: 30px; background-color: white; border-radius: 5px;">
       <div style="text-align: center; font-size: 20px; margin-bottom: 20px; color: #333">欢迎登录星迹计划管理系统</div>
       <el-form :model="form" :rules="rules" ref="formRef">
@@ -85,11 +88,24 @@ export default {
   background-image: url("@/assets/imgs/bg.jpg");
   background-size: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #666;
 }
 a {
   color: #2a60c9;
+}
+.logo-container {
+  text-align: center;
+  height: 15%;
+  margin-bottom: 5px;
+  object-fit: fill;
+}
+
+.logo-img {
+  max-width: 200px;
+  height: auto;
+  display: block;
 }
 </style>

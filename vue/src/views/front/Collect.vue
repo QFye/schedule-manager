@@ -16,7 +16,9 @@
           <div style="width: 600px;margin-top: 8px">
             <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;width: 90%;font-weight: bold;font-size: 20px;margin: 2.5px 10px">店铺名称：{{item.name}}</div>
             <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;width: 90%;font-size: 16px;margin: 2.5px 10px">商家地址：{{item.address}}</div>
-            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;width: 90%;font-size: 16px;margin: 2.5px 10px">商家简介：{{item.description}}</div>
+            <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;width: 90%;font-size: 16px;margin: 2.5px 10px">商家简介：
+              <div v-html="item.description"></div>
+            </div>
           </div>
           <div style="flex: 1; margin-right: 20px">
             <div style="height: 30px;line-height: 30px;font-size: 18px;text-align: center;background-color: #7fa0df;width:70%;border-radius: 5px;margin: 10px auto"><a href="#" @click="navTo('/front/business?id='+item.id)">进入店铺</a></div>

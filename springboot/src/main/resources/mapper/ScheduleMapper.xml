@@ -38,13 +38,11 @@
         insert into schedule
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
-                <if test="categoryId != null">categoryId,</if>
                 <if test="date != null">date,</if>
                 <if test="userId != null">userId,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
-                <if test="categoryId != null">#{categoryId},</if>
                 <if test="date != null">#{date},</if>
                 <if test="userId != null">#{userId},</if>
         </trim>
@@ -53,9 +51,6 @@
     <update id="updateById" parameterType="com.example.entity.Schedule">
         update schedule
         <set>
-            <if test="categoryId != null">
-                categoryId = #{categoryId},
-            </if>
             <if test="date != null">
                 date = #{date},
             </if>

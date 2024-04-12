@@ -32,7 +32,7 @@
           商家联系电话：{{item.phone}}
         </div>
         <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-          交易时间：{{item.date}}
+          交易时间：{{item.date | extractDate}} {{item.date | extractTime}}
         </div>
         <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
           详情信息：{{item.details}}
@@ -54,6 +54,33 @@ export default {
   },
   mounted() {
     this.loadOrder()
+  },
+  filters: {
+    extractDate(datetime) {
+      // 使用JavaScript的Date对象解析datetime字符串
+      const dateObject = new Date(datetime);
+
+      // 提取日期部分
+      const year = dateObject.getFullYear();
+      const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
+      const day = ("0" + dateObject.getDate()).slice(-2);
+
+      // 返回格式化的日期字符串
+      return `${year}-${month}-${day}`;
+    },
+
+    extractTime(datetime) {
+      // 同样解析datetime字符串
+      const dateObject = new Date(datetime);
+
+      // 提取时间部分
+      const hours = ("0" + dateObject.getHours()).slice(-2);
+      const minutes = ("0" + dateObject.getMinutes()).slice(-2);
+      const seconds = ("0" + dateObject.getSeconds()).slice(-2);
+
+      // 返回格式化的时间字符串
+      return `${hours}:${minutes}:${seconds}`;
+    }
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {

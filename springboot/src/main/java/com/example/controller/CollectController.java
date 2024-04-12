@@ -80,6 +80,12 @@ public class CollectController {
         return Result.success(list);
     }
 
+    @GetMapping("/selectByUserAndBusiness")
+    public Result selectByUserAndBusiness(@RequestParam Integer userId, @RequestParam Integer businessId) {
+        Collect collect = collectService.selectByUserAndBusiness(userId, businessId);
+        return Result.success(collect);
+    }
+
     /**
      * 分页查询
      */

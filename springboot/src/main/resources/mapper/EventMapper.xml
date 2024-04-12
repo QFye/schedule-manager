@@ -32,6 +32,31 @@
         order by event.id
     </select>
 
+    <select id="selectAllFromRepository" resultType="com.example.entity.Event">
+        select
+        <include refid="Base_Column_List" />, eventCategory.name as categoryName
+        from event
+        left join repository on repository.eventId = event.id
+        left join eventCategory on event.categoryId = eventCategory.id
+        <where>
+            <if test="event.id != null"> and event.id= #{event.id}</if>
+            <if test="event.name != null"> and event.name like concat('%', #{event.name}, '%')</if>
+            <if test="event.start != null"> and event.start= #{event.start}</if>
+            <if test="event.price != null"> and event.price= #{event.price}</if>
+            <if test="event.last != null"> and event.last= #{event.last}</if>
+            <if test="event.description != null"> and event.description= #{event.description}</if>
+            <if test="event.img != null"> and event.img= #{event.img}</if>
+            <if test="event.categoryId != null"> and categoryId= #{categoryId}</if>
+            <if test="event.status != null"> and status= #{status}</if>
+            <if test="event.count != null"> and count= #{count}</if>
+            <if test="event.businessId != null"> and businessId= #{businessId}</if>
+            <if test="event.address != null"> and event.address= #{event.address}</if>
+            <if test="event.userId != null"> and event.userId= #{event.userId}</if>
+            and repository.userId = #{repositoryUserId}
+        </where>
+        order by event.id
+    </select>
+
     <select id="selectById" resultType="com.example.entity.Event">
         select
         <include refid="Base_Column_List" />, business.name as businessName, eventCategory.name as categoryName, eventCategory.img as categoryImg, user.name as userName

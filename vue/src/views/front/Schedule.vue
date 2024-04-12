@@ -28,8 +28,13 @@
               placeholder="选择时间">
             </el-time-picker>
           </el-form-item>
-          <el-form-item prop="name" label="持续时间">
-            <el-input v-model="addEvent.last" autocomplete="off"></el-input>
+          <el-form-item prop="last" label="持续时间">
+            <el-time-picker
+                v-model="displayLast"
+                @change="handleChange"
+                type="time"
+                placeholder="选择时间">
+            </el-time-picker>
           </el-form-item>
           <el-form-item prop="address" label="事件地点">
             <el-input v-model="addEvent.address" autocomplete="off"></el-input>
@@ -137,8 +142,7 @@ export default {
       addEvent: {},
       addVisible: false,
       categoryData: [],
-      deleteConfirmVisible: {},
-      editVisible: {},
+      displayLast: new Date(2016, 9, 0, 0, 0),
     }
   },
   mounted() {
@@ -175,6 +179,17 @@ export default {
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
+    handleChange() {
+      let value = this.displayLast.toLocaleTimeString()
+      // 假设 value 是 "HH:mm:ss" 格式的时间字符串
+      let timeArray = value.split(':');
+      let hours = parseInt(timeArray[0]);
+      let minutes = parseInt(timeArray[1]);
+      let seconds = parseInt(timeArray[2]);
+
+      // 更新 item.last 的值
+      this.addEvent.last = hours * 3600 + minutes * 60 + seconds;
+    },
     showDeleteBar(index){
       this.$set(this.scheduleData[index], 'deleteConfirmVisible', true)
     },
@@ -209,6 +224,7 @@ export default {
         })
       }).catch(() => {
       })
+      this.loadSchedule()
     },
     loadEvent(){
       this.addEvent.status = 'PERSONAL'

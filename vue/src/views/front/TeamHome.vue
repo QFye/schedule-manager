@@ -10,7 +10,7 @@
         <el-button type="primary" style="margin: 0 10px" @click="fromVisible = true">
           创建团队
         </el-button>
-        <el-button type="primary" style="margin: 0 10px">
+        <el-button type="primary" style="margin: 0 10px" @click="infoVisible = true">
           查找团队
         </el-button>
       </div>
@@ -29,12 +29,21 @@
         </div>
       </el-dialog>
 
+      <el-dialog title="消息" :visible.sync="infoVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+        <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+          该功能还在开发中哦~
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="infoVisible = false" style="height: 50%">确认</el-button>
+        </div>
+      </el-dialog>
+
       <div style="margin-top: 5px; padding: 5px 20px">
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="我加入的团队" name="join">
             <div style="">
               <div style="display: flex;border-bottom: #cccccc 1px solid;padding: 0 20px" v-for="item in teamData">
-                <div style="flex: 1">
+                <div style="width:80%">
                   <div style="font-weight: bold; font-size: 20px; margin-bottom: 10px; margin-top: 10px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
                     团队名称：{{item.name}}
                   </div>
@@ -42,16 +51,18 @@
                     创建用户：{{item.user}}
                   </div>
                   <div style="margin-top: 2.5px; margin-bottom: 5px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
-                    创建时间：{{item.creationTime}}
+                    创建时间：{{item.creationTime | extractDate}} {{item.creationTime | extractTime}}
                   </div>
                 </div>
 
-                <div style="width:200px;padding: 10px 0">
-                  <div style="margin: 10px auto; background-color: #7fa0df; height: 25px;width: 80px;border-radius: 10px;text-align: center;line-height: 25px;color: white">
-                    团队功能
-                  </div>
-                  <div style="margin: 10px auto; background-color: #7fa0df; height: 25px;width: 80px;border-radius: 10px;text-align: center;line-height: 25px;color: white">
-                    退出团队
+                <div style="width:20%;padding: 15px 0">
+                  <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;">
+                    <el-button type="primary" plain style="width: 60%;margin-left: 10px" @click="infoVisible = true">
+                      团队功能
+                    </el-button>
+                    <el-button type="danger" plain style="width: 60%" @click="infoVisible = true">
+                      退出团队
+                    </el-button>
                   </div>
                 </div>
               </div>
@@ -68,16 +79,18 @@
                     成员人数：{{item.memberCount}}
                   </div>
                   <div style="margin-top: 2.5px; margin-bottom: 5px">
-                    创建时间：{{item.creationTime}}
+                    创建时间：{{item.creationTime | extractDate}} {{item.creationTime | extractTime}}
                   </div>
                 </div>
 
-                <div style="width:200px;padding: 10px 0">
-                  <div style="margin: 10px auto; background-color: #7fa0df; height: 25px;width: 80px;border-radius: 10px;text-align: center;line-height: 25px;color: white">
-                    团队功能
-                  </div>
-                  <div style="margin: 10px auto; background-color: #7fa0df; height: 25px;width: 80px;border-radius: 10px;text-align: center;line-height: 25px;color: white">
-                    退出团队
+                <div style="width:20%;padding: 15px 0">
+                  <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;">
+                    <el-button type="primary" plain style="width: 60%;margin-left: 10px" @click="infoVisible = true">
+                      团队功能
+                    </el-button>
+                    <el-button type="danger" plain style="width: 60%" @click="infoVisible = true">
+                      退出团队
+                    </el-button>
                   </div>
                 </div>
               </div>
@@ -107,6 +120,34 @@ export default {
       title: null,
       fromVisible: false,
       form: {},
+      infoVisible: false,
+    }
+  },
+  filters: {
+    extractDate(datetime) {
+      // 使用JavaScript的Date对象解析datetime字符串
+      const dateObject = new Date(datetime);
+
+      // 提取日期部分
+      const year = dateObject.getFullYear();
+      const month = ("0" + (dateObject.getMonth() + 1)).slice(-2);
+      const day = ("0" + dateObject.getDate()).slice(-2);
+
+      // 返回格式化的日期字符串
+      return `${year}-${month}-${day}`;
+    },
+
+    extractTime(datetime) {
+      // 同样解析datetime字符串
+      const dateObject = new Date(datetime);
+
+      // 提取时间部分
+      const hours = ("0" + dateObject.getHours()).slice(-2);
+      const minutes = ("0" + dateObject.getMinutes()).slice(-2);
+      const seconds = ("0" + dateObject.getSeconds()).slice(-2);
+
+      // 返回格式化的时间字符串
+      return `${hours}:${minutes}:${seconds}`;
     }
   },
   mounted() {

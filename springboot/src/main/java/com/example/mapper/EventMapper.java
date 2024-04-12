@@ -43,7 +43,10 @@ public interface EventMapper {
     */
     List<Event> selectAll(Event event);
 
-    @Select("select *, eventCategory.name as categoryName from event,user,schedule,scheduleeventrelation,eventCategory where event.categoryId = eventCategory.id and user.id=schedule.userId and schedule.id = scheduleeventrelation.scheduleId and event.id = scheduleeventrelation.eventId and user.id=#{userId} and DATE(event.start) = #{searchDate} order by event.start")
+    @Select("select * from event where event.status = 'STATIC'")
+    List<Event> selectAllSTATIC(Event event);
+
+    @Select("select *, eventCategory.name as categoryName from event,user,schedule,scheduleeventrelation,eventCategory where event.categoryId = eventCategory.id and user.id=schedule.userId and schedule.id = scheduleeventrelation.scheduleId and event.id = scheduleeventrelation.eventId and user.id=#{userId} and schedule.date = #{searchDate} order by event.start")
     List<Event> selectByUserAndDate(@Param("userId") Integer id, @Param("searchDate") Date date);
 
     @Select("select * from event where event.status = 'STATIC' order by count desc limit 10")
@@ -64,6 +67,9 @@ public interface EventMapper {
     @Delete("delete from ScheduleEventRelation where eventId = #{id} and scheduleId = #{schedule.id}")
     void deleteInSchedule(Integer id, Schedule schedule);
 
-    @Select("select * from event, repository where event.id = repository.eventId and event.id=#{eventId} and repository.userId = #{userId} and status = 'STATIC'")
+    @Select("select event.id from event, repository where event.id = repository.eventId and event.id=#{eventId} and repository.userId = #{userId} and status = 'STATIC'")
     Event selectFromRepository(Integer eventId, Integer userId);
+
+
+    List<Event> selectAllFromRepository(Event event, Integer repositoryUserId);
 }

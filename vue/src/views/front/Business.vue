@@ -17,7 +17,8 @@
           </div>
           <div style="width: 44%;margin-right: 30px">
             <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:25%;height: 30px;line-height: 30px;border-radius: 5px"><a href="#" @click="infoVisible = true">发消息</a></div>
-            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:25%;height: 30px;line-height: 30px;border-radius: 5px"><a href="#" @click="movToFavourites()">收藏商家</a></div>
+            <div style="margin: 28px auto; text-align: center; background-color: #7fa0df; color: white;width:25%;height: 30px;line-height: 30px;border-radius: 5px" v-if="collectData === null"><a href="#" @click="movToFavourites()">收藏商家</a></div>
+            <div style="margin: 28px auto; text-align: center; background-color: #bdbdbd; color: white;width:25%;height: 30px;line-height: 30px;border-radius: 5px" v-else><a href="#">已收藏</a></div>
           </div>
           <el-dialog title="消息" :visible.sync="infoVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
             <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
@@ -40,10 +41,10 @@
       </el-row>
     </div>
     <div style="width: 60%; background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 20px 20px">
-      <el-row :gutter="20">
+      <el-row :gutter="40">
         <el-col v-for="item in eventData" :span="6" style="width: 20%">
           <div style="width: 100%; object-fit: contain; height: 140px">
-            <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 100%; height: 140px; border-radius: 10px">
+            <a href="#" @click="navTo('/front/eventDetail?id=' + item.id)"><img :src="item.img" style="width: 100%; height: 140px; border-radius: 10px"></a>
           </div>
           <div style="font-weight: 500; margin-top: 0px; text-overflow: ellipsis; overflow: hidden; width: 100%;white-space: nowrap; margin-top: 10px">
             {{ item.name }}</div>
@@ -65,17 +66,28 @@ export default {
       businessId: businessId,
       businessData: {},
       eventData: [],
-      infoVisible: false
+      infoVisible: false,
+      collectData: {},
     }
   },
   mounted() {
     this.loadBusiness()
     this.loadEvent()
+    this.loadCollect()
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
     navTo(url){
       location.href=url
+    },
+    loadCollect(){
+      this.$request.get('collect/selectByUserAndBusiness?userId='+this.user.id+'&businessId='+this.businessId).then(res=>{
+        if(res.code == '200'){
+          this.collectData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
     },
     movToFavourites(){
       let data = {userId: this.user.id, businessId: this.businessData.id}

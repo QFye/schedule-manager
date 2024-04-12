@@ -24,6 +24,7 @@
               </div>
             </div>
             <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="goToPerson">个人信息</el-dropdown-item>
               <el-dropdown-item>
                 <div style="text-decoration: none" @click="logout">退出</div>
               </el-dropdown-item>
@@ -57,6 +58,17 @@ export default {
     this.loadNotice()
   },
   methods: {
+    goToPerson() {
+      if (this.user.role === 'ADMIN') {
+        this.$router.push('/adminPerson')
+      }
+      if (this.user.role === 'BUSINESS') {
+        this.$router.push('/businessPerson')
+      }
+      if (this.user.role === 'USER') {
+        this.$router.push('/front/person')
+      }
+    },
     loadNotice() {
       this.$request.get('/notice/selectAll').then(res => {
         this.notice = res.data

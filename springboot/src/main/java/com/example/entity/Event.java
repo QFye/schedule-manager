@@ -34,6 +34,8 @@ public class Event implements Serializable {
 
     private String address;
 
+    private Date displayLast;
+
     private Integer categoryId;
 
     private Integer businessId;
@@ -47,6 +49,14 @@ public class Event implements Serializable {
     private String categoryImg;
 
     private Integer userId;
+
+    public Date getDisplayLast() {
+        return displayLast;
+    }
+
+    public void setDisplayLast(Date displayLast) {
+        this.displayLast = displayLast;
+    }
 
     public String getUserName() {
         return userName;

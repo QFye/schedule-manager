@@ -85,13 +85,14 @@
         <div style="padding: 5px 5px 5px 5px">
           <el-row>
             <el-col :span="5" v-for="item in eventData" style="width: 20%">
-              <div style="width: 100%; object-fit: contain; height: 200px; margin-bottom: 10px">
-                <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 100%; height: 100%; object-fit: contain;border-radius: 10px; margin: 0 auto">
+              <div style="width: 100%; object-fit: contain; height: 200px; margin-bottom: 10px; background-color: #d2ddf1;border-radius: 10px">
+                <a href="#" @click="navTo('/front/eventDetail?id=' + item.id)"><img :src="item.img" style="width: 100%; height: 100%; object-fit: contain;border-radius: 10px; margin: 0 auto"></a>
               </div>
 
               <div style="font-weight: 500; margin-top: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-weight: bold">
                 {{ item.name }}</div>
-              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold">￥{{ item.price }}</div>
+              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold" v-if="item.price !== 0">￥{{ item.price }}</div>
+              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold" v-else>免费</div>
             </el-col>
           </el-row>
         </div>
@@ -99,14 +100,15 @@
         <div style="margin: 20px 10px 10px 10px; font-weight: bold; color: rgb(255,255,255); font-size: 20px; height: 40px; background-color: #ff70a9; width: 110px; text-align: center;line-height: 40px; border-radius: 20px">为您推荐</div>
         <div style="padding: 5px 5px 5px 5px">
           <el-row>
-            <el-col :span="5" v-for="item in eventData" style="width: 20%">
-              <div style="width: 100%; object-fit: contain; height: 200px; margin-bottom: 10px">
-                <img @click="navTo('/front/eventDetail?id=' + item.id)" :src="item.img" style="width: 100%; height: 100%; object-fit: contain;border-radius: 10px; margin: 0 auto">
+            <el-col :span="5" v-for="item in recommendData" style="width: 20%">
+              <div style="width: 100%; object-fit: contain; height: 200px; margin-bottom: 10px; background-color: #d2ddf1;border-radius: 10px">
+                <a href="#" @click="navTo('/front/eventDetail?id=' + item.id)"><img :src="item.img" style="width: 100%; height: 100%; object-fit: contain;border-radius: 10px; margin: 0 auto"></a>
               </div>
 
               <div style="font-weight: 500; margin-top: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;font-weight: bold">
                 {{ item.name }}</div>
-              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold">￥{{ item.price }}</div>
+              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold" v-if="item.price !== 0">￥{{ item.price }}</div>
+              <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 20px; margin-top: 5px;color: red;font-weight: bold" v-else>免费</div>
             </el-col>
           </el-row>
         </div>
@@ -168,6 +170,7 @@ export default {
         require('@/assets/imgs/ad9.jpg'),
       ],
       eventData: [],
+      recommendData: [],
       currentDate: new Date().toLocaleDateString(),
     }
   },
@@ -175,9 +178,19 @@ export default {
     this.loadCategory()
     this.loadSchedule()
     this.loadEvent()
+    this.loadRecommend()
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
+    loadRecommend(){
+      this.$request.get('event/recommend').then(res=>{
+        if(res.code == '200'){
+          this.recommendData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
     calculateEndTime(item) {
       let startDate = new Date(item.start);
       let endDate = new Date(startDate.getTime() + item.last * 1000);

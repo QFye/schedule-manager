@@ -75,4 +75,8 @@ public class CollectService {
     }
 
     public void deleteByBusinessId(Integer id) {collectMapper.deleteByBusinessId(id);}
+
+    public Collect selectByUserAndBusiness(Integer userId, Integer businessId) {
+        return collectMapper.selectByUserAndBusiness(userId, businessId);
+    }
 }
