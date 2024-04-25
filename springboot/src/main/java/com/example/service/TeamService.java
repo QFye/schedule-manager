@@ -3,7 +3,9 @@ package com.example.service;
 import cn.hutool.core.date.DateUtil;
 import com.example.entity.Account;
 import com.example.entity.Team;
+import com.example.entity.User;
 import com.example.mapper.TeamMapper;
+import com.example.mapper.UserMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -20,13 +22,15 @@ public class TeamService {
 
     @Resource
     private TeamMapper teamMapper;
+    @Resource
+    private UserMapper userMapper;
 
     /**
      * 新增
      */
     public void add(Team team, Integer userId) {
         teamMapper.insert(team);
-        teamMapper.insertRelation(team, userId);
+        teamMapper.insertRelation(team.getId(), userId);
     }
 
     /**
@@ -78,4 +82,16 @@ public class TeamService {
     public List<Team> selectByUserId(Integer id) {return teamMapper.selectByUserId(id);}
 
     public List<Team> selectByManagerId(Integer id) {return teamMapper.selectByManagerId(id);}
+
+    public void deleteFromTeam(Integer userId, Integer teamId) {
+        teamMapper.deleteRelation(userId, teamId);
+        List<User> users = userMapper.selectByTeam(teamId);
+        if(users.isEmpty()){
+            teamMapper.deleteById(teamId);
+        }
+    }
+
+    public Team selectRelation(Integer userId, Integer teamId) {
+        return teamMapper.selectRelation(userId, teamId);
+    }
 }

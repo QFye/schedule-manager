@@ -37,6 +37,12 @@ public class TeamController {
         return Result.success();
     }
 
+    @DeleteMapping("/deleteFromTeam")
+    public Result deleteFromTeam(@RequestParam Integer userId, @RequestParam Integer teamId) {
+        teamService.deleteFromTeam(userId, teamId);
+        return Result.success();
+    }
+
     /**
      * 批量删除
      */
@@ -67,6 +73,12 @@ public class TeamController {
     @GetMapping("/selectByUserId")
     public Result selectByUserId(@RequestParam Integer id) {
         List<Team> team = teamService.selectByUserId(id);
+        return Result.success(team);
+    }
+
+    @GetMapping("/selectRelation")
+    public Result selectRelation(@RequestParam Integer userId, @RequestParam Integer teamId) {
+        Team team = teamService.selectRelation(userId, teamId);
         return Result.success(team);
     }
 

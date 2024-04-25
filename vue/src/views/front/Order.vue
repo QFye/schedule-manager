@@ -1,13 +1,28 @@
 <template>
   <div class="main-content">
+    <div style="background-color: white;padding: 15px 20px;height: 45px">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/front/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>我的钱包</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div style="width: 60%; display: flex;background-color: rgba(246,252,255,0.91); min-height: 200px; margin:10px auto; border-radius: 20px; padding: 40px 50px">
       <div style="width: 20%">
         <img :src="user.avatar" style="width: 80%; height: 120px; border-radius: 60px; margin-right: 30px">
       </div>
-      <div style="width: 60%">
+      <div style="width: 60%;text-align: center">
         <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;text-align: center; font-size: 30px; font-weight: bold; margin-bottom: 12px">{{user.name}} 的钱包</div>
         <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;text-align: center; font-size: 25px; color: red;font-weight: bold; margin-bottom: 12px">余额：￥ {{user.money}} </div>
-        <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;text-align: center; font-size: 25px; color: white;font-weight: bold;background-color: #7fa0df;border-radius: 10px;width:35%;height: 34px;line-height: 34px;margin:0 auto" @click="HandleClick">立即充值</div>
+        <el-button type="primary" plain @click="HandleClick" style="width: 30%">立即充值</el-button>
+
+        <el-dialog title="充值提示" :visible.sync="infoVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+            恭喜您成功充值50元。（为方便演示，省略充值过程）
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="infoVisible = false" style="height: 50%">确认</el-button>
+          </div>
+        </el-dialog>
       </div>
       <div style="width: 20%">
         <img src="@/assets/imgs/钱包.png" style="width:80%;height: 120px;border-radius: 10px">
@@ -50,6 +65,7 @@ export default {
     return {
       user: JSON.parse(localStorage.getItem('xm-user')||'{}'),
       orderData: [],
+      infoVisible: false,
     }
   },
   mounted() {
@@ -101,6 +117,7 @@ export default {
       let jsonUser = JSON.stringify(this.user);
       localStorage.setItem('xm-user', jsonUser);
       this.save()
+      this.infoVisible = true
     },
     save() {   // 保存按钮触发的逻辑  它会触发新增或者更新
       this.$request({

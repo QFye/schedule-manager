@@ -132,4 +132,7 @@ public class UserService {
         userMapper.updateById(dbUser);
     }
 
+    public List<User> selectByTeam(Integer teamId) {
+        return userMapper.selectByTeam(teamId);
+    }
 }

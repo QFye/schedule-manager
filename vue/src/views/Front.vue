@@ -4,7 +4,7 @@
     <!--头部-->
     <div class="front-header">
       <div class="front-header-left">
-        <img src="@/assets/imgs/logo.png" alt="">
+        <img src="@/assets/imgs/icon_logo.jpg" alt="">
         <div @click="navTo('/front/home')" class="title">星迹日程管理系统</div>
       </div>
       <div class="front-header-center">

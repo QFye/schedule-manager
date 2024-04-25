@@ -64,6 +64,12 @@ public class UserController {
         return Result.success(user);
     }
 
+    @GetMapping("/selectByTeam/{teamId}")
+    public Result selectByTeam(@PathVariable Integer teamId) {
+        List<User> users = userService.selectByTeam(teamId);
+        return Result.success(users);
+    }
+
     /**
      * 查询所有
      */

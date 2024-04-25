@@ -1,5 +1,11 @@
 <template>
   <div class="main-content">
+    <div style="background-color: white;padding: 15px 20px;height: 45px">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/front/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>日程仓库</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div style="width: 80%;background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 20px 15px">
       <div style="font-size: 30px; font-weight: bold; text-align: center; width: 100%; line-height: 50px; height: 50px; border-bottom: #cccccc 2px solid">
         日程仓库

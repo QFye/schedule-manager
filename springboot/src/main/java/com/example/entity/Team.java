@@ -22,6 +22,16 @@ public class Team implements Serializable {
 
     private Integer memberCount = 0;
 
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Integer getMemberCount() {
         return memberCount;
     }

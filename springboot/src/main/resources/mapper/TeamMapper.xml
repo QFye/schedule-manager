@@ -5,11 +5,11 @@
 <mapper namespace="com.example.mapper.TeamMapper">
 
     <sql id="Base_Column_List">
-        id,name,creationTime,userId
+        id,name,creationTime,userId,description
     </sql>
 
     <select id="selectAll" resultType="com.example.entity.Team">
-        select team.id, team.name, team.creationTime, team.userId, user.name as user, M.memberCount
+        select team.id, team.name, team.creationTime, team.userId, team.description, user.name as user, M.memberCount
         from team
         left join user on team.userId = user.id
         left join (
@@ -24,6 +24,7 @@
             <if test="name != null"> and team.name like concat('%', #{team.name}, '%')</if>
             <if test="creationTime != null"> and creationTime= #{creationTime}</if>
             <if test="userId != null"> and userId= #{userId}</if>
+            <if test="description != null"> and description= #{description}</if>
         </where>
         group by team.id order by team.id
     </select>
@@ -47,12 +48,14 @@
             <if test="name != null">name,</if>
             <if test="creationTime != null">creationTime,</if>
             <if test="userId != null">userId,</if>
+            <if test="description != null">description,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id},</if>
             <if test="name != null">#{name},</if>
             <if test="creationTime != null">#{creationTime},</if>
             <if test="userId != null">#{userId},</if>
+            <if test="description != null">#{description},</if>
         </trim>
     </insert>
 
@@ -67,6 +70,9 @@
             </if>
             <if test="userId != null">
                 userId = #{userId},
+            </if>
+            <if test="description != null">
+                description = #{description},
             </if>
         </set>
         where id = #{id} 

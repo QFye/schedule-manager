@@ -1,5 +1,12 @@
 <template>
   <div class="main-content">
+    <div style="background-color: white;padding: 15px 20px;height: 45px">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/front/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ path: '/front/eventCategory?id='+eventData.categoryId }">{{eventData.categoryName}}</el-breadcrumb-item>
+        <el-breadcrumb-item>{{eventData.name}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div style="width: 60%; background-color: white; min-height: 1000px; margin:10px auto; border-radius: 20px">
       <div>
         <el-row :gutter="20">

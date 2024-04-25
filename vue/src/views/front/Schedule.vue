@@ -1,5 +1,11 @@
 <template>
   <div class="main-content">
+    <div style="background-color: white;padding: 15px 20px;height: 45px">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/front/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>我的计划表</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div style="width: 60%; background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 20px 15px">
       <div style="height: 30px; line-height: 30px; text-align: center; display: flex">
         <div style="; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">选择日期：</div>
@@ -61,7 +67,8 @@
       </el-dialog>
       <div style="margin-top: 20px; padding: 10px 10px 10px 10px">
         <h3 style="margin-bottom: 8px">当前日期：{{ showDate.toLocaleDateString() }}</h3>
-        <el-timeline>
+        <div v-if="scheduleData.length === 0" style="margin-top: 40px">计划表空空如也哦，快来新建事件吧！</div>
+        <el-timeline v-else>
           <el-timeline-item :timestamp="item.start | extractTime" placement="top" v-for="(item, index) in scheduleData" :key="item.id">
             <el-card>
               <div style="display: flex">
@@ -112,12 +119,21 @@
                     简介：{{item.description}}
                   </div>
                 </div>
-                <div style="margin-top: 10px; margin-bottom: 5px; width: 10%">
+                <div style="margin-top: 10px; margin-bottom: 5px; width: 10%" v-if="item.status === 'PERSONAL'">
                   <div style="margin-bottom: 8px;text-align: center">
                     <el-button type="primary" icon="el-icon-edit" style="width: 70%" @click="showEditBar(index)"></el-button>
                   </div>
                   <div style="text-align: center">
                     <el-button type="primary" icon="el-icon-delete" style="width:70%" @click="showDeleteBar(index)"></el-button>
+                  </div>
+                </div>
+
+                <div style="margin-top: 10px; margin-bottom: 5px; width: 10%" v-if="item.status === 'UNCONFIRMED'">
+                  <div style="margin-bottom: 8px;text-align: center">
+                    <el-button type="primary" style="width: 70%" @click="accept(item)">接受</el-button>
+                  </div>
+                  <div style="text-align: center">
+                    <el-button type="primary" style="width:70%" @click="refuse(item)">取消</el-button>
                   </div>
                 </div>
               </div>
@@ -209,6 +225,35 @@ export default {
         }else{
           this.$message.error(res.msg)
         }
+      })
+    },
+    accept(item){
+      item.status = "PERSONAL"
+      this.$request({
+        url: '/event/update',
+        method:'PUT',
+        data: item
+      }).then(res => {
+        if (res.code === '200') {  // 表示成功保存
+          this.$message.success('保存成功')
+          this.load(1)
+          this.fromVisible = false
+        } else {
+          this.$message.error(res.msg)  // 弹出错误的信息
+        }
+      })
+    },
+    refuse(item){
+      this.$confirm('您确定不接受当前团队事件吗？', '确认', {type: "warning"}).then(response => {
+        this.$request.delete('/event/deleteInSchedule/' + item.id+'?userId='+this.user.id+'&date='+this.showDate.toLocaleDateString()).then(res => {
+          if (res.code === '200') {   // 表示操作成功
+            this.$message.success('操作成功')
+            this.load(1)
+          } else {
+            this.$message.error(res.msg)  // 弹出错误的信息
+          }
+        })
+      }).catch(() => {
       })
     },
     del(item) {   // 单个删除

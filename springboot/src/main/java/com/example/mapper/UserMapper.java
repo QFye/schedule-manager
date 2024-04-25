@@ -37,4 +37,7 @@ public interface UserMapper {
 
     @Select("select * from user where username = #{username}")
     User selectByUsername(String username);
+
+    @Select("select * from user, team, teamMemberRelationship where user.id = teamMemberRelationship.userId and team.id = teamMemberRelationship.teamId and team.id = #{id}")
+    List<User> selectByTeam(Integer teamId);
 }

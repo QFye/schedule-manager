@@ -1,5 +1,11 @@
 <template>
   <div class="main-content">
+    <div style="background-color: white;padding: 15px 20px;height: 45px">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/front/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>我的团队</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div style="width: 60%;background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 25px 15px">
       <div style="text-align: center; font-weight: bold; font-size: 30px;width:100%;height: 30px;margin-bottom: 15px">
         我的团队
@@ -10,9 +16,38 @@
         <el-button type="primary" style="margin: 0 10px" @click="fromVisible = true">
           创建团队
         </el-button>
-        <el-button type="primary" style="margin: 0 10px" @click="infoVisible = true">
-          查找团队
+        <el-button type="primary" style="margin: 0 10px" @click="joinVisible = true">
+          加入团队
         </el-button>
+
+        <el-dialog title="加入团队" :visible.sync="joinVisible" width="25%" :close-on-click-modal="false" destroy-on-close>
+          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+            <el-input v-model="joinTeam" placeholder="请输入队伍编号"></el-input>
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="joinVisible = false" style="height: 50%">取消</el-button>
+            <el-button type="primary" @click="FindTeam" style="height: 50%">确认</el-button>
+          </div>
+        </el-dialog>
+
+        <el-dialog title="信息" :visible.sync="confirmVisible" width="25%" :close-on-click-modal="false" destroy-on-close>
+          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+            是否确认加入团队 {{result.name}} ？
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click="confirmVisible = false" style="height: 50%">取消</el-button>
+            <el-button type="primary" @click="SendApplication" style="height: 50%">确认</el-button>
+          </div>
+        </el-dialog>
+
+        <el-dialog title="信息" :visible.sync="alreadyIn" width="25%" :close-on-click-modal="false" destroy-on-close>
+          <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+            已加入该团队。
+          </div>
+          <div slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="alreadyIn = false" style="height: 50%">确认</el-button>
+          </div>
+        </el-dialog>
       </div>
       <el-dialog title="信息" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
         <el-form label-width="100px" style="padding-right: 50px" :model="form" :rules="rules" ref="formRef">
@@ -42,7 +77,7 @@
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="我加入的团队" name="join">
             <div style="">
-              <div style="display: flex;border-bottom: #cccccc 1px solid;padding: 0 20px" v-for="item in teamData">
+              <div style="display: flex;border-bottom: #cccccc 1px solid;padding: 0 20px" v-for="(item, index) in teamData">
                 <div style="width:80%">
                   <div style="font-weight: bold; font-size: 20px; margin-bottom: 10px; margin-top: 10px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
                     团队名称：{{item.name}}
@@ -57,12 +92,24 @@
 
                 <div style="width:20%;padding: 15px 0">
                   <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;">
-                    <el-button type="primary" plain style="width: 60%;margin-left: 10px" @click="infoVisible = true">
+                    <el-button type="primary" plain style="width: 60%;margin-left: 10px" @click="navTo('/front/team?id='+item.id)">
                       团队功能
                     </el-button>
-                    <el-button type="danger" plain style="width: 60%" @click="infoVisible = true">
+                    <el-button type="danger" plain style="width: 60%" @click="HandleDeleteFromTeam(index)">
                       退出团队
                     </el-button>
+                    <div style="text-align: left;">
+                      <el-dialog title="退出团队" :visible.sync="item.deleteConfirmVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+                        <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+                          即将退出团队 {{item.name}} ，是否继续？
+                        </div>
+                        <div slot="footer" class="dialog-footer">
+                          <el-button @click="hideDeleteBar(index)" style="height: 50%">取消</el-button>
+                          <el-button type="primary" @click="HandleDelete(item)" style="height: 50%">确认</el-button>
+                        </div>
+                      </el-dialog>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -70,7 +117,7 @@
           </el-tab-pane>
           <el-tab-pane label="我创建的团队" name="create">
             <div style="">
-              <div style="display: flex;border-bottom: #cccccc 1px solid;padding: 0 20px" v-for="item in managerData">
+              <div style="display: flex;border-bottom: #cccccc 1px solid;padding: 0 20px" v-for="(item, index) in managerData">
                 <div style="flex: 1">
                   <div style="font-weight: bold; font-size: 20px; margin-bottom: 10px; margin-top: 10px">
                     团队名称：{{item.name}}
@@ -85,12 +132,23 @@
 
                 <div style="width:20%;padding: 15px 0">
                   <div style="display: flex; flex-direction: column; gap: 10px; text-align: right;">
-                    <el-button type="primary" plain style="width: 60%;margin-left: 10px" @click="infoVisible = true">
+                    <el-button type="primary" plain style="width: 60%;margin-left: 10px" @click="navTo('/front/team?id='+item.id)">
                       团队功能
                     </el-button>
-                    <el-button type="danger" plain style="width: 60%" @click="infoVisible = true">
+                    <el-button type="danger" plain style="width: 60%" @click="HandleDeleteFromTeam2(index)">
                       退出团队
                     </el-button>
+                    <div style="text-align: left;">
+                      <el-dialog title="退出团队" :visible.sync="item.deleteConfirmVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+                        <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+                          即将退出团队 {{item.name}} ，是否继续？
+                        </div>
+                        <div slot="footer" class="dialog-footer">
+                          <el-button @click="hideDeleteBar2(index)" style="height: 50%">取消</el-button>
+                          <el-button type="primary" @click="HandleDelete(item)" style="height: 50%">确认</el-button>
+                        </div>
+                      </el-dialog>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -104,6 +162,7 @@
 </template>
 
 <script>
+
 
 export default {
 
@@ -121,6 +180,14 @@ export default {
       fromVisible: false,
       form: {},
       infoVisible: false,
+      deleteTeam: {},
+      joinVisible: false,
+      joinTeam: '',
+      result: {},
+      confirmVisible: false,
+      alreadyIn: false,
+      newData: {},
+      InTeam: true,
     }
   },
   filters: {
@@ -158,6 +225,74 @@ export default {
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
+    SendApplication(){
+      let newData = {}
+      newData.userId = this.user.id
+      newData.teamId = parseInt(this.joinTeam)
+      this.confirmVisible = false
+      this.$request.get('team/selectRelation?userId='+newData.userId+'&teamId='+newData.teamId).then(res=>{
+        if(res.code == '200'){
+          if(res.data !== null){
+            this.alreadyIn = true
+          }
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+      if(this.alreadyIn !== true){
+        this.$request({
+          url: '/joinApplication/add',
+          method: 'POST',
+          data: newData
+        }).then(res => {
+          if (res.code === '200') {  // 表示成功保存
+            this.$message.success('已发送加入申请')
+          } else {
+            this.$message.error(res.msg)  // 弹出错误的信息
+          }
+        })
+      }
+    },
+    FindTeam(){
+      this.$request.get('team/selectById/'+this.joinTeam).then(res=>{
+        if(res.code == '200'){
+          if(res.data === null){
+            this.$message.info('没有查询到相关团队')
+          } else {
+            this.result = res.data
+            this.joinVisible = false
+            this.confirmVisible = true
+          }
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    HandleDelete(item){
+      this.deleteTeam = {}
+      this.deleteTeam.userId = this.user.id
+      this.deleteTeam.teamId = item.id
+      item.deleteConfirmVisible = false
+      this.$request.delete('/team/deleteFromTeam?userId=' + this.user.id+'&teamId='+item.id).then(res => {
+        if (res.code === '200') {   // 表示操作成功
+          this.$message.success('操作成功')
+        } else {
+          this.$message.error(res.msg)  // 弹出错误的信息
+        }
+      })
+    },
+    HandleDeleteFromTeam(index){
+      this.$set(this.teamData[index], 'deleteConfirmVisible', true)
+    },
+    hideDeleteBar(index){
+      this.$set(this.teamData[index], 'deleteConfirmVisible', false)
+    },
+    HandleDeleteFromTeam2(index){
+      this.$set(this.managerData[index], 'deleteConfirmVisible', true)
+    },
+    hideDeleteBar2(index){
+      this.$set(this.managerData[index], 'deleteConfirmVisible', false)
+    },
     loadForm(){
       this.form.userId = this.user.id
       this.form.creationTime = new Date()

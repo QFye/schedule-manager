@@ -19,6 +19,7 @@
         <el-table-column prop="creationTime" label="创建时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="user" label="创建人"></el-table-column>
         <el-table-column prop="memberCount" label="成员数量"></el-table-column>
+        <el-table-column prop="description" label="团队简介"></el-table-column>
 
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
@@ -54,6 +55,9 @@
           <el-select v-model="form.userId" placeholder="请选择创建人">
             <el-option v-for="item in userData" :label="item.name" :value="item.id" :key="item.id"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item prop="description" label="团队简介">
+          <el-input v-model="form.description" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

@@ -1,6 +1,7 @@
 package com.example.mapper;
 
 import com.example.entity.Team;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 
@@ -16,8 +17,8 @@ public interface TeamMapper {
     */
     int insert(Team team);
 
-    @Insert("insert into teammemberrelationship (teamId, userId) VALUES (#{team.id}, #{userId})")
-    int insertRelation(Team team, Integer userId);
+    @Insert("insert into teammemberrelationship (teamId, userId) VALUES (#{teamId}, #{userId})")
+    int insertRelation(Integer teamId, Integer userId);
 
     /**
       * 删除
@@ -47,4 +48,10 @@ public interface TeamMapper {
 
     @Select("select *, M.memberCount as memberCount from team left join user on team.userId = user.id left join (select team.id as tid, COUNT(user.id) as memberCount from team left join TeamMemberRelationship on TeamMemberRelationship.teamId = team.id left join user on TeamMemberRelationship.userId = user.id group by team.id) as M on M.tid = team.id where team.userId = user.id and user.id = #{id}")
     List<Team> selectByManagerId(Integer id);
+
+    @Delete("delete from teamMemberRelationship where userId = #{userId} and teamId = #{teamId}")
+    void deleteRelation(Integer userId, Integer teamId);
+
+    @Select("select * from teammemberrelationship where userId = #{userId} and teamId = #{teamId}")
+    Team selectRelation(Integer userId, Integer teamId);
 }

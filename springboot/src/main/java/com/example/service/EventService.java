@@ -6,6 +6,7 @@ import com.example.utils.TokenUtils;
 import com.example.utils.UserCF;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -212,5 +213,33 @@ public class EventService {
     public void addInRepository(Event event, Integer userId) {
         eventMapper.insert(event);
         repositoryMapper.insert(new Repository(userId, event.getId()));
+    }
+
+    public List<Event> selectAllFromRepository(Event event, Integer repositoryUserId) {
+        return eventMapper.selectAllFromRepository(event, repositoryUserId);
+    }
+
+    public void sendEvent(Event event, Integer teamId, Integer currentUserId) {
+        List<User> users = userMapper.selectByTeam(teamId);
+        for(User user : users){
+            Schedule schedule = scheduleMapper.selectByIdAndDate(user.getId(), event.getDate());
+            if(schedule == null){
+                schedule = new Schedule();
+                schedule.setDate(event.getDate());
+                schedule.setUserId(user.getId());
+                scheduleMapper.insert(schedule);
+            }
+            Event newEvent = new Event();
+            BeanUtils.copyProperties(event, newEvent);
+            if(Objects.equals(user.getId(), currentUserId)){
+                newEvent.setStatus("PERSONAL");
+            }else {
+                newEvent.setStatus("UNCONFIRMED");
+            }
+            newEvent.setId(null);
+            eventMapper.insert(newEvent);
+            eventMapper.insertIntoSchedule(newEvent, schedule);
+        }
+
     }
 }

@@ -50,6 +50,16 @@ public class Event implements Serializable {
 
     private Integer userId;
 
+    private Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     public Date getDisplayLast() {
         return displayLast;
     }

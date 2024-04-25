@@ -53,6 +53,12 @@ public class EventController {
         return Result.success();
     }
 
+    @PostMapping("/sendEvent/{teamId}")
+    public Result sendEvent(@RequestBody Event event, @PathVariable Integer teamId, @RequestParam Integer currentUserId) {
+        eventService.sendEvent(event, teamId, currentUserId);
+        return Result.success();
+    }
+
     /**
      * 删除
      */
@@ -109,6 +115,12 @@ public class EventController {
     @GetMapping("/selectAll")
     public Result selectAll(Event event ) {
         List<Event> list = eventService.selectAll(event);
+        return Result.success(list);
+    }
+
+    @GetMapping("/selectAllFromRepository/{repositoryUserId}")
+    public Result selectAllFromRepository(Event event, @PathVariable Integer repositoryUserId) {
+        List<Event> list = eventService.selectAllFromRepository(event, repositoryUserId);
         return Result.success(list);
     }
 

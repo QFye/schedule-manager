@@ -51,6 +51,7 @@ const routes = [
       { path: 'order', name: 'Order', meta: { name: '我的订单' }, component: () => import('../views/front/Order') },
       { path: 'collect', name: 'Collect', meta: { name: '我的收藏' }, component: () => import('../views/front/Collect') },
       { path: 'repository', name: 'Repository', meta: { name: '日程仓库' }, component: () => import('../views/front/Repository') },
+      { path: 'team', name: 'Team', meta: { name: '团队页' }, component: () => import('../views/front/Team') },
     ]
   },
   { path: '/login', name: 'Login', meta: { name: '登录' }, component: () => import('../views/Login.vue') },

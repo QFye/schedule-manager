@@ -1,5 +1,11 @@
 <template>
   <div class="main-content">
+    <div style="background-color: white;padding: 15px 20px;height: 45px">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/front/home' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>{{businessData.name}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div style="width: 60%; display: flex;background-color: white; min-height: 200px; margin:10px auto; border-radius: 20px; padding: 20px 15px">
       <el-row gutter="20">
         <el-col style="text-align: center; font-size: 18px;background-color: #bbcffc; height: 30px; width: 90px; margin: 10px 20px;border-radius: 15px; display: flex; padding-left: 8px">
