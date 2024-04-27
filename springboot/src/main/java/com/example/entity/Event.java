@@ -52,6 +52,16 @@ public class Event implements Serializable {
 
     private Date date;
 
+    private Double s;
+
+    public Double getS() {
+        return s;
+    }
+
+    public void setS(Double s) {
+        this.s = s;
+    }
+
     public Date getDate() {
         return date;
     }

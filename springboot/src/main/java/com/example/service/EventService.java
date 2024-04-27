@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.*;
 import com.example.mapper.*;
+import com.example.utils.PSO;
 import com.example.utils.TokenUtils;
 import com.example.utils.UserCF;
 import com.github.pagehelper.PageHelper;
@@ -10,6 +11,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,6 +38,8 @@ public class EventService {
     private UserMapper userMapper;
     @Resource
     private RepositoryMapper repositoryMapper;
+    @Resource
+    private UseRecordMapper useRecordMapper;
 
     /**
      * 新增
@@ -120,6 +127,10 @@ public class EventService {
 
     public void deleteInSchedule(Integer id, Date date, Integer userId) {
         Schedule schedule = scheduleMapper.selectByIdAndDate(userId, date);
+        UseRecord useRecord = useRecordMapper.selectByTargetIdAndScheduleId(id, schedule.getId());
+        if(useRecord != null){
+            useRecordMapper.delete(id, schedule.getId());
+        }
         eventMapper.deleteInSchedule(id, schedule);
         eventMapper.deleteById(id);
     }
@@ -241,5 +252,111 @@ public class EventService {
             eventMapper.insertIntoSchedule(newEvent, schedule);
         }
 
+    }
+
+    /**
+     * 计算两个日期相差的天数（忽略时、分、秒）
+     *
+     * @param date1 第一个日期对象
+     * @param date2 第二个日期对象
+     * @return 相差的天数（整数）
+     */
+    private static int getDifferenceInDays(Date date1, Date date2) {
+        long millisecondDiff = Math.abs(date2.getTime() - date1.getTime());
+        return (int) (millisecondDiff / (1000 * 60 * 60 * 24));
+    }
+
+    private static Date mergeDateAndTime(Date currentDate, double hourOfDay) {
+        // 将Date类型转换为LocalDate
+        LocalDate localDate = currentDate.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        // 将Double类型的时间小时转换为LocalTime
+        LocalTime localTime = LocalTime.ofNanoOfDay((long) (hourOfDay * 3600_000_000_000L));
+
+        // 合并LocalDate和LocalTime得到LocalDateTime
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+
+        // 将LocalDateTime转换回旧版的Date类型
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    private Event selectRandom(List<Event> events){
+        int n = events.size();
+        Random random = new Random();
+        int k = random.nextInt(n);
+        Event res = events.get(k);
+        events.remove(k);
+        return res;
+    }
+
+    public List<Event> generateSchedule(Integer userId, Date date) {
+        Double delta = 0.99;
+
+        List<Event> input = new ArrayList<>();
+        List<Event> res = new ArrayList<>();
+
+        List<UseRecord> useRecords = useRecordMapper.select7Days(userId, date);
+        Map<Integer, Double> V = new HashMap<>();
+        Map<Integer, Event> mp = new HashMap<>();
+        for(UseRecord useRecord : useRecords){
+            Event event = eventMapper.selectById(useRecord.getInitialId());
+            Schedule schedule = scheduleMapper.selectById(useRecord.getScheduleId());
+            event.setDate(schedule.getDate());
+            if(!V.containsKey(event.getId())){
+                V.put(event.getId(), 0.0);
+                mp.put(event.getId(), event);
+            }
+            V.put(event.getId(), V.get(event.getId()) + Math.pow(delta, getDifferenceInDays(date, event.getDate())));
+            input.add(event);
+        }
+
+        if(input.size() < 20){
+            Integer num = 20 - input.size();
+            List<Event> repoEvents = eventMapper.selectAllFromRepository(new Event(), userId);
+            if(repoEvents.size() < num){
+                for(Event event : repoEvents){
+                    if(!mp.containsKey(event.getId())){
+                        mp.put(event.getId(), event);
+                        input.add(event);
+                        V.put(event.getId(), 0.0);
+                    }
+                }
+            } else {
+                Event event = selectRandom(repoEvents);
+                input.add(event);
+            }
+        }
+
+        Map<Integer, Double> attributes = PSO.generate(input, V);
+        attributes.forEach((id, s) -> {
+            Event event = mp.get(id);
+            event.setStart(mergeDateAndTime(date, s));
+            res.add(event);
+        });
+
+        res.sort(Comparator.comparing(Event::getStart));
+
+        return res;
+    }
+
+    public void applyInSchedule(Event event, Date date, Integer userId, Integer initialId) {
+        UseRecord useRecord = new UseRecord();
+        eventMapper.insert(event);
+        Schedule schedule = scheduleMapper.selectByIdAndDate(userId, date);
+        if(schedule == null){
+            schedule = new Schedule(date, userId);
+            scheduleMapper.insert(schedule);
+        }
+        eventMapper.insertIntoSchedule(event, schedule);
+        useRecord.setInitialId(initialId);
+        useRecord.setTargetId(event.getId());
+        useRecord.setScheduleId(schedule.getId());
+        useRecordMapper.insert(useRecord);
+    }
+
+    public List<History> getHistory() {
+        return PSO.getHistory();
     }
 }

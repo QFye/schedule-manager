@@ -16,6 +16,7 @@
         </el-date-picker>
         <el-button style="margin-left: 10px" @click="loadSchedule">切换</el-button>
         <el-button type="primary" @click="addVisible = true">添加</el-button>
+        <el-button type="primary" @click="handleGenerate" style="text-align: right">智能生成计划</el-button>
       </div>
       <el-dialog title="信息" :visible.sync="addVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
         <el-form label-width="100px" style="padding-right: 50px" :model="addEvent" ref="formRef">
@@ -65,6 +66,48 @@
           <el-button type="primary" @click="save(addEvent)">确 定</el-button>
         </div>
       </el-dialog>
+
+      <el-dialog title="生成计划" :visible.sync="generateVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
+        <el-collapse v-model="activeNames" @change="handleChange">
+          <el-collapse-item title="计划事件" name="计划事件">
+            <template>
+              <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+                <li v-for="(item, index) in generateData" class="infinite-list-item">
+                  <div style="display: flex; margin: 10px 0; padding: 5px 30px">
+                    <div style="width: 20%; text-align: center;">
+                      <div style="border: #cccccc 1px solid; border-radius: 10px; width: 50%; height: 50px">
+                        <img :src="item.img" style="width: 100%; height: 50px">
+                      </div>
+                    </div>
+                    <div style="width: 60%">
+                      <div>
+                        {{item.name}}
+                      </div>
+                      <div>
+                        {{item.start | extractTime}}
+                      </div>
+                    </div>
+                    <div style="width:20%; text-align: right">
+                      <el-button type="danger" icon="el-icon-delete" circle @click="removeFromGenerate(item)"></el-button>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </template>
+          </el-collapse-item>
+          <el-collapse-item title="属性" name="属性">
+            <div v-for="item in historyData" style="margin: 2px 0; padding: 5px 30px">
+              {{item.name}} : {{item.value}}
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="generateVisible = false">取 消</el-button>
+          <el-button type="primary" @click="HandleAddGenerate">添 加</el-button>
+        </div>
+      </el-dialog>
+
       <div style="margin-top: 20px; padding: 10px 10px 10px 10px">
         <h3 style="margin-bottom: 8px">当前日期：{{ showDate.toLocaleDateString() }}</h3>
         <div v-if="scheduleData.length === 0" style="margin-top: 40px">计划表空空如也哦，快来新建事件吧！</div>
@@ -115,8 +158,9 @@
                   </el-dialog>
                 </div>
                 <div style="width: 48%; padding-left: 16px">
-                  <div style="padding-top: 10px;padding-bottom: 10px">
-                    简介：{{item.description}}
+                  <div style="padding-top: 10px;padding-bottom: 10px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap">
+                    简介：
+                    <div v-html="item.description"></div>
                   </div>
                 </div>
                 <div style="margin-top: 10px; margin-bottom: 5px; width: 10%" v-if="item.status === 'PERSONAL'">
@@ -153,12 +197,16 @@ export default {
     return {
       user: JSON.parse(localStorage.getItem('xm-user')||'{}'),
       scheduleData: [],
+      generateData: [],
       currentDate: new Date(),
       showDate: this.currentDate,
       addEvent: {},
       addVisible: false,
+      generateVisible: false,
       categoryData: [],
+      historyData: [],
       displayLast: new Date(2016, 9, 0, 0, 0),
+      activeNames: ['计划事件']
     }
   },
   mounted() {
@@ -195,6 +243,33 @@ export default {
   },
   // methods：本页面所有的点击事件或者其他函数定义区
   methods: {
+    removeFromGenerate(item) {
+      const index = this.generateData.indexOf(item);
+      if (index > -1) {
+        this.generateData.splice(index, 1);
+      }
+    },
+    HandleAddGenerate(){
+      this.generateData.forEach((event) => {
+        let initialId = event.id
+        event.status = 'PERSONAL'
+        event.id = null
+        this.$request({
+          url: '/event/applyInSchedule?userId='+this.user.id+'&date='+this.showDate.toLocaleDateString()+'&initialId='+initialId,
+          method: 'POST',
+          data: event
+        }).then(res => {
+          if (res.code === '200') {  // 表示成功保存
+            this.load(1)
+            this.fromVisible = false
+          } else {
+            this.$message.error(res.msg)  // 弹出错误的信息
+          }
+        })
+      })
+      this.$message.success('添加成功')
+      this.generateVisible = false
+    },
     handleChange() {
       let value = this.displayLast.toLocaleTimeString()
       // 假设 value 是 "HH:mm:ss" 格式的时间字符串
@@ -226,6 +301,30 @@ export default {
           this.$message.error(res.msg)
         }
       })
+    },
+    loadGenerate(){
+      this.$request.get('event/generateSchedule/'+this.user.id+'?date='+this.showDate.toLocaleDateString()).then(res=>{
+        if(res.code === '200'){
+          this.generateData = res.data
+          this.$message.success("生成成功");
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    loadHistory(){
+      this.$request.get('event/getHistory').then(res=>{
+        if(res.code === '200'){
+          this.historyData = res.data
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
+    },
+    handleGenerate(){
+      this.loadGenerate()
+      this.loadHistory()
+      this.generateVisible = true
     },
     accept(item){
       item.status = "PERSONAL"

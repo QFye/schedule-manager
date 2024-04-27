@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.common.Result;
 import com.example.entity.Event;
+import com.example.entity.History;
 import com.example.service.EventService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,12 @@ public class EventController {
     @PostMapping("/addInSchedule")
     public Result addInSchedule(@RequestBody Event event, @RequestParam Date date, @RequestParam Integer userId) {
         eventService.addInSchedule(event, date, userId);
+        return Result.success();
+    }
+
+    @PostMapping("/applyInSchedule")
+    public Result applyInSchedule(@RequestBody Event event, @RequestParam Date date, @RequestParam Integer userId, @RequestParam Integer initialId) {
+        eventService.applyInSchedule(event, date, userId, initialId);
         return Result.success();
     }
 
@@ -115,6 +122,18 @@ public class EventController {
     @GetMapping("/selectAll")
     public Result selectAll(Event event ) {
         List<Event> list = eventService.selectAll(event);
+        return Result.success(list);
+    }
+
+    @GetMapping("/generateSchedule/{userId}")
+    public Result generateSchedule(@PathVariable Integer userId, @RequestParam Date date) {
+        List<Event> list = eventService.generateSchedule(userId, date);
+        return Result.success(list);
+    }
+
+    @GetMapping("/getHistory")
+    public Result getHistory() {
+        List<History> list = eventService.getHistory();
         return Result.success(list);
     }
 

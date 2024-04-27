@@ -72,4 +72,8 @@ public interface EventMapper {
 
 
     List<Event> selectAllFromRepository(Event event, Integer repositoryUserId);
+
+    @Select("select * from Event, User, Schedule, ScheduleEventRelation where user.id = schedule.userId and ScheduleEventRelation.scheduleId = schedule.id and ScheduleEventRelation.eventId = event.id and user.id = #{userId} AND schedule.date BETWEEN DATE_SUB(#{date}, INTERVAL 7 DAY) AND #{date}")
+    List<Event> selet7Days(Integer userId, Date date);
+
 }

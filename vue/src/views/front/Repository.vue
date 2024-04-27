@@ -317,11 +317,12 @@ export default {
       this.load(1)
     },
     save(item){
+      let initialId = item.id
       item.modifyVisible = false
       item.id = null
       item.status = 'PERSONAL'
       this.$request({
-        url: '/event/addInSchedule?userId='+this.user.id+'&date='+this.currentDate.toLocaleDateString(),
+        url: '/event/applyInSchedule?userId='+this.user.id+'&date='+this.currentDate.toLocaleDateString()+'&initialId='+initialId,
         method: 'POST',
         data: item
       }).then(res => {
